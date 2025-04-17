@@ -4,7 +4,7 @@ const props = defineProps<{
   modelValue: string;
   size?: "sm" | "md" | "lg";
   fullWidth?: boolean;
-  color?: string;
+  color?: "accent" | "gray"; // Add more as needed
 }>();
 
 const emit = defineEmits<{
@@ -20,6 +20,21 @@ const sizes = {
 function selectTab(value: string) {
   emit("update:modelValue", value);
 }
+
+const colorMap = {
+  accent: {
+    base: "bg-accent-100",
+    textActive: "text-accent-900",
+    textInactive: "text-accent-600 hover:text-accent-800",
+  },
+  gray: {
+    base: "bg-gray-200",
+    textActive: "text-gray-900",
+    textInactive: "text-gray-600 hover:text-gray-800",
+  },
+};
+
+const theme = colorMap[props.color || "gray"];
 </script>
 
 <template>
@@ -27,11 +42,11 @@ function selectTab(value: string) {
     :class="[
       'inline-flex p-1 rounded-md shadow-inner transition-all',
       fullWidth ? 'w-full justify-between' : '',
-      `bg-${color || 'gray'}-200`,
+      theme.base,
     ]"
   >
     <button
-      v-for="tab in props.tabs"
+      v-for="tab in tabs"
       :key="tab.value"
       @click="selectTab(tab.value)"
       :class="[
@@ -39,8 +54,8 @@ function selectTab(value: string) {
         sizes[size || 'md'],
         fullWidth ? 'flex-1 text-center' : '',
         modelValue === tab.value
-          ? `bg-white shadow text-${color || 'gray'}-900`
-          : `text-${color || 'gray'}-600 hover:text-${color || 'gray'}-800`,
+          ? ['bg-white shadow', theme.textActive]
+          : theme.textInactive,
       ]"
     >
       {{ tab.label }}

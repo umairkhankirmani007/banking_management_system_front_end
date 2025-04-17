@@ -1,42 +1,27 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
-const emit = defineEmits(["click"]);
 
-const props = defineProps({
-  width: {
-    type: String,
-    default: "w-full",
-  },
-  height: {
-    type: String,
-    default: "h-12",
-  },
-  color: {
-    type: String,
-    default: "bg-accent",
-  },
-  textColor: {
-    type: String,
-    default: "text-white",
-  },
-  rounded: {
-    type: String,
-    default: "rounded-md",
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  icon: {
-    type: String,
-    default: "",
-  },
-  iconPosition: {
-    type: String,
-    default: "left",
-    validator: (val: string) => ["left", "right"].includes(val),
-  },
-});
+const emit = defineEmits<{
+  (e: "click"): void;
+}>();
+
+const props = defineProps<{
+  width?: string;
+  height?: string;
+  color?: string;
+  textColor?: string;
+  rounded?: string;
+  disabled?: boolean;
+  icon?: string;
+  iconPosition?: "left" | "right";
+}>();
+
+const width = props.width || "w-full";
+const height = props.height || "h-12";
+const color = props.color || "bg-accent";
+const textColor = props.textColor || "text-white";
+const rounded = props.rounded || "rounded-md";
+const iconPos = props.iconPosition || "left";
 </script>
 
 <template>
@@ -54,12 +39,8 @@ const props = defineProps({
     :disabled="disabled"
     @click="emit('click')"
   >
-    <Icon v-if="icon && iconPosition === 'left'" :icon="icon" class="w-5 h-5" />
+    <Icon v-if="icon && iconPos === 'left'" :icon="icon" class="w-5 h-5" />
     <slot />
-    <Icon
-      v-if="icon && iconPosition === 'right'"
-      :icon="icon"
-      class="w-5 h-5"
-    />
+    <Icon v-if="icon && iconPos === 'right'" :icon="icon" class="w-5 h-5" />
   </button>
 </template>

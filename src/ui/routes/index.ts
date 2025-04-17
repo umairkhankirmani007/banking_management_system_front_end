@@ -16,7 +16,7 @@ const router = createRouter({
 });
 
 // 👇 Add this block for auth guarding
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _, next) => {
   const user = userStore();
 
   if (to.meta.requiresAuth && !user.userIsAuthenticated) {
