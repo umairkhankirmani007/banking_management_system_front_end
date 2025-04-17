@@ -5,9 +5,11 @@ const privateRoutes: RouteRecordRaw[] = [
     path: "/dashboard",
     name: "Dashboard",
     component: () => import("@/screens/HomeScreen.vue"),
-    meta: { layout: "BaseLayout" },
+    meta: {
+      layout: "BaseLayout",
+      requiresAuth: true,
+    },
   },
-
   {
     path: "/",
     redirect: "/dashboard",

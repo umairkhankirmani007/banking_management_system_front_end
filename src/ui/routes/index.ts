@@ -5,6 +5,7 @@ import {
 } from "vue-router";
 import publicRoutes from "./publicRoutes";
 import privateRoutes from "./PrivateRoutes";
+import { userStore } from "../store/userInfo";
 
 const router = createRouter({
   history:
@@ -12,6 +13,17 @@ const router = createRouter({
       ? createWebHistory()
       : createWebHashHistory(),
   routes: [...publicRoutes, ...privateRoutes],
+});
+
+// 👇 Add this block for auth guarding
+router.beforeEach((to, from, next) => {
+  const user = userStore();
+
+  if (to.meta.requiresAuth && !user.userIsAuthenticated) {
+    next("/login");
+  } else {
+    next();
+  }
 });
 
 export default router;
