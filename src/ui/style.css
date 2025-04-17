@@ -6,6 +6,7 @@
   --color-accent: #dca06d;
   --color-text: #99bc85;
   --color-primary: #f6f0f0;
+  --color-gray: #f7cfd8;
 }
 
 p {
@@ -16,6 +17,11 @@ p {
 h1 {
   font-size: 20px;
   color: var(--color-text);
+}
+
+span {
+  font-size: 15px;
+  color: var(--color-midDark);
 }
 
 :root {

@@ -3,6 +3,8 @@ import App from "./App.vue";
 import router from "./routes";
 import "@/style.css";
 import { createPinia } from "pinia";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 import {
   Chart as ChartJS,
@@ -16,6 +18,7 @@ import {
   LinearScale,
   Filler,
   ArcElement,
+  RadialLinearScale,
 } from "chart.js";
 
 ChartJS.register(
@@ -28,12 +31,13 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   Filler,
-  ArcElement
+  ArcElement,
+  RadialLinearScale
 );
 
 const app = createApp(App);
 const pinia = createPinia();
-
+app.use(toast);
 app.use(router);
 app.use(pinia);
 

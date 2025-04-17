@@ -1,12 +1,16 @@
-USDUSD
 <script setup lang="ts">
 import { Line } from "vue-chartjs";
 import { ref } from "vue";
 import dayjs from "dayjs";
 
-const daysInMonth = dayjs().daysInMonth();
-const labels = Array.from({ length: daysInMonth }, (_, i) => `${i + 1}`);
+// Generate last 10 days' labels
+const labels = Array.from({ length: 10 }, (_, i) =>
+  dayjs()
+    .subtract(9 - i, "day")
+    .format("MMM D")
+);
 
+// Generate mock data for each of those 10 days
 const payments = labels.map(() => Math.floor(Math.random() * 5000) + 100);
 
 const chartData = ref({
@@ -27,21 +31,27 @@ const chartOptions = {
   responsive: true,
   plugins: {
     legend: {
+      display: false,
       position: "top" as const,
     },
     title: {
-      display: true,
-      text: `Payments for ${dayjs().format("MMMM YYYY")}`,
+      display: false,
+      text: `Payments (Last 10 Days)`,
     },
   },
   scales: {
     x: {
+      grid: {
+        display: false,
+      },
       title: {
         display: false,
-        text: "Day of the Month",
       },
     },
     y: {
+      grid: {
+        display: false,
+      },
       title: {
         display: true,
         text: "Amount",

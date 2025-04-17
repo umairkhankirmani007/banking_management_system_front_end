@@ -17,7 +17,7 @@ const currentTab = ref("login");
 const handleLogin = () => {
   console.log("Submitted:", formData.value);
   user.userIsAuthenticated = true;
-  router.push("/");
+  router.push("/verify-otp");
 };
 
 const tabOptions = [

@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import CreditCard from "../components/CreditCard.vue";
+import DonutChart from "../components/DonutChart.vue";
+import Header from "../components/Header.vue";
 import LineChart from "../components/LineChart.vue";
+import QuickActionWidgets from "../components/QuickActionWidgets.vue";
 import Table from "../components/Table.vue";
-import UserProfileWidget from "../components/UserProfileWidget.vue";
 
 const columns = [
   { key: "date", label: "Date" },
@@ -36,7 +39,6 @@ const rows = [
     type: "Debit",
   },
   { date: "2025-04-05", description: "Bonus", amount: "+$500", type: "Credit" },
-  // Add more dummy transactions as needed
 ];
 </script>
 
@@ -44,15 +46,18 @@ const rows = [
   <main class="grid grid-cols-1 md:grid-cols-4 gap-4 py-2">
     <!-- Top Full-Width Header -->
     <section class="md:col-span-4 bg-white p-4 shadow rounded-xl">
-      <h2 class="text-xl font-semibold">Dashboard Overview</h2>
+      <Header />
     </section>
 
     <!-- Left Tall Widget -->
     <section
       class="md:col-span-2 row-span-2 space-y-5 bg-white p-4 shadow rounded-xl"
     >
-      <h2 class="text-xl font-semibold mb-4">User Profile</h2>
-      <UserProfileWidget />
+      <h2 class="text-xl font-semibold mb-4">Overview</h2>
+      <div class="flex justify-between gap-10 items-center">
+        <CreditCard />
+        <DonutChart />
+      </div>
       <h2 class="text-xl font-semibold">Recent Transactions</h2>
 
       <Table :columns="columns" :rows="rows" :rowsPerPage="7" />
@@ -60,13 +65,13 @@ const rows = [
 
     <!-- Bottom Right Small Box -->
     <section class="md:col-span-2 bg-white p-4 shadow rounded-xl">
-      <h2 class="text-xl font-semibold mb-4">Notifications</h2>
-      <p>Alerts, messages, etc.</p>
+      <h2 class="text-xl font-semibold mb-4">Actions</h2>
+      <QuickActionWidgets />
     </section>
     <!-- Top Right Small Box -->
     <section class="md:col-span-2 bg-white p-4 shadow rounded-xl">
       <h2 class="text-xl font-semibold mb-4">Recent Activity</h2>
-      <LineChart />>
+      <LineChart />
     </section>
 
     <!-- Bottom Full-Width Section -->

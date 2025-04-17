@@ -22,7 +22,7 @@ const fomrData = ref({
     >
       <h2 class="text-xl font-semibold text-accent">Edit Profile</h2>
       <img
-        :src="staticData.bankImage"
+        :src="staticData.masterCardLogo"
         class="w-24 h-24 rounded-full object-cover"
       />
       <div class="grid grid-cols-2 gap-5">
