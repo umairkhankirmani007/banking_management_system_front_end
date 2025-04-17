@@ -28,12 +28,12 @@ const modelValue = defineModel<string>();
 </script>
 
 <template>
-  <div :class="['relative text-white', props.width]">
+  <div :class="['relative text-black', props.width]">
     <!-- Icon inside input -->
     <Icon
       v-if="props.icon"
       :icon="props.icon"
-      class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+      class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text pointer-events-none"
     />
     <input
       :type="props.type"

@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen flex flex-col">
-    <main class="flex-1 p-4">
+  <div class="min-h-screen mx-auto">
+    <main class="px-5 py-1">
       <slot />
     </main>
   </div>

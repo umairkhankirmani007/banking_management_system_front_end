@@ -14,6 +14,15 @@ const privateRoutes: RouteRecordRaw[] = [
     path: "/",
     redirect: "/dashboard",
   },
+  {
+    path: "/profile",
+    name: "Profile",
+    component: () => import("@/screens/UserProfileScreen.vue"),
+    meta: {
+      layout: "BaseLayout",
+      requiresAuth: true,
+    },
+  },
 ];
 
 export default privateRoutes;

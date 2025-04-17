@@ -2,9 +2,10 @@
 
 @theme {
   --color-dark: #210f37;
-  --color-light: #4f1c51;
+  --color-midDark: #4f1c51;
   --color-accent: #dca06d;
-  --color-text: #f7cfd8;
+  --color-text: #99bc85;
+  --color-primary: #f6f0f0;
 }
 
 p {
@@ -15,4 +16,8 @@ p {
 h1 {
   font-size: 20px;
   color: var(--color-text);
+}
+
+:root {
+  background-color: var(--color-primary);
 }
