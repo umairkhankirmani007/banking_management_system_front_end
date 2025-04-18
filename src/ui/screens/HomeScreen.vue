@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import CreditCard from "../components/CreditCard.vue";
 import DonutChart from "../components/DonutChart.vue";
 import Header from "../components/Header.vue";
 import LineChart from "../components/LineChart.vue";
 import QuickActionWidgets from "../components/QuickActionWidgets.vue";
+import SendPaymentModal from "../components/SendPaymentModal.vue";
 import Table from "../components/Table.vue";
+import Payees from "../components/Payees.vue";
 
 const columns = [
   { key: "date", label: "Date" },
@@ -40,12 +43,16 @@ const rows = [
   },
   { date: "2025-04-05", description: "Bonus", amount: "+$500", type: "Credit" },
 ];
+
+const showModal = ref(false);
 </script>
 
 <template>
   <main class="grid grid-cols-1 md:grid-cols-4 gap-4 py-2">
     <!-- Top Full-Width Header -->
-    <section class="md:col-span-4 bg-white p-4 shadow rounded-xl">
+    <section
+      class="sticky top-0 z-50 md:col-span-4 bg-white p-4 shadow rounded-xl"
+    >
       <Header />
     </section>
 
@@ -66,7 +73,7 @@ const rows = [
     <!-- Bottom Right Small Box -->
     <section class="md:col-span-2 bg-white p-4 shadow rounded-xl">
       <h2 class="text-xl font-semibold mb-4">Actions</h2>
-      <QuickActionWidgets />
+      <QuickActionWidgets @openPymentModal="showModal = true" />
     </section>
     <!-- Top Right Small Box -->
     <section class="md:col-span-2 bg-white p-4 shadow rounded-xl">
@@ -76,8 +83,9 @@ const rows = [
 
     <!-- Bottom Full-Width Section -->
     <section class="md:col-span-4 bg-white p-4 shadow rounded-xl">
-      <h2 class="text-xl font-semibold mb-4">Quick Actions</h2>
-      <p>Buttons, charts, or summaries.</p>
+      <h2 class="text-xl font-semibold mb-4">Payees</h2>
+      <Payees />
     </section>
+    <SendPaymentModal v-if="showModal" @close="showModal = false" />
   </main>
 </template>
