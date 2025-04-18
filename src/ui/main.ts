@@ -5,6 +5,7 @@ import "@/style.css";
 import { createPinia } from "pinia";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
+import vSelect from "vue-select";
 
 import {
   Chart as ChartJS,
@@ -34,9 +35,11 @@ ChartJS.register(
   ArcElement,
   RadialLinearScale
 );
-
 const app = createApp(App);
 const pinia = createPinia();
+
+app.component("v-select", vSelect);
+
 app.use(toast);
 app.use(router);
 app.use(pinia);

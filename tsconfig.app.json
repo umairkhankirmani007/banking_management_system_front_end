@@ -9,6 +9,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
+    "typeRoots": ["./", "./node_modules/@types"],
 
     /* Required for path aliasing */
     "baseUrl": ".",

@@ -106,13 +106,6 @@ const tabOptions = [
             icon="mdi:phone"
             width="w-full"
           />
-          <CInput
-            type="password"
-            v-model="formData.password"
-            placeholder="Choose a password"
-            icon="mdi:lock"
-            width="w-full"
-          />
 
           <CButton
             type="submit"

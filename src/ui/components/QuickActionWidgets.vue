@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue/dist/iconify.js";
 import { ref } from "vue";
+import router from "../routes";
 
 const quickActions = ref([
   {
@@ -43,7 +44,7 @@ const openStatement = () => {
 };
 
 const openSupport = () => {
-  console.log("Support function executed");
+  router.push("/support");
 };
 
 const openDispute = () => {
@@ -76,8 +77,7 @@ const handleActionClick = (value: string) => {
       v-for="item in quickActions"
       :key="item.id"
       @click="handleActionClick(item.value)"
-      class="p-3 cursor-pointer text-midDark hover:scale-105 duration-100 shadow-md font-semibold w-[210px] h-15 flex items-center rounded-full justify-center gap-3"
-      :style="{ background: item.color }"
+      class="p-3 cursor-pointer text-midDark bg-white hover:bg-accent hover:scale-105 duration-100 shadow-md font-semibold w-[210px] h-15 flex items-center rounded-full justify-center gap-3"
     >
       <Icon class="text-4xl" :icon="item.icon" />
       <h2>{{ item.title }}</h2>

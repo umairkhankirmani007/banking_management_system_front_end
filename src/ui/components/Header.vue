@@ -7,6 +7,10 @@ const { user } = userStore();
 const handleNavigate = () => {
   router.push("/profile");
 };
+
+const handleLogout = () => {
+  console.log("logout");
+};
 </script>
 
 <template>
@@ -14,6 +18,7 @@ const handleNavigate = () => {
     <h2 class="text-xl font-semibold">Dashboard Overview</h2>
     <div class="flex items-center gap-2">
       <button
+        @click="handleLogout"
         class="bg-red-500 text-white rounded-full px-7 h-8 hover:bg-red-400 cursor-pointer"
       >
         Logout

@@ -3,12 +3,11 @@ import path from "path";
 import { isDev } from "./utils.js";
 
 app.on("ready", () => {
-  // Get primary display dimensions
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
   const mainWindow = new BrowserWindow({
-    width: width, // Use full screen width
-    height: height, // Use full screen height
+    width: width,
+    height: height,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,

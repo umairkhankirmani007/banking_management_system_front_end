@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Line } from "vue-chartjs";
+import { Bar } from "vue-chartjs"; // Change from Line to Bar
 import { ref } from "vue";
 import dayjs from "dayjs";
 
@@ -10,7 +10,7 @@ const labels = Array.from({ length: 10 }, (_, i) =>
     .format("MMM D")
 );
 
-// Generate mock data for each of those 10 days
+// Generate mock data
 const payments = labels.map(() => Math.floor(Math.random() * 5000) + 100);
 
 const chartData = ref({
@@ -19,10 +19,9 @@ const chartData = ref({
     {
       label: "Payments",
       data: payments,
-      borderColor: "#3b82f6",
-      backgroundColor: "rgba(59, 130, 246, 0.3)",
-      fill: true,
-      tension: 0.4,
+      backgroundColor: "#3b82f6", // solid fill for bar
+      borderRadius: 6,
+      barThickness: 20,
     },
   ],
 });
@@ -34,17 +33,10 @@ const chartOptions = {
       display: false,
       position: "top" as const,
     },
-    title: {
-      display: false,
-      text: `Payments (Last 10 Days)`,
-    },
   },
   scales: {
     x: {
       grid: {
-        display: false,
-      },
-      title: {
         display: false,
       },
     },
@@ -64,6 +56,6 @@ const chartOptions = {
 
 <template>
   <div>
-    <Line :data="chartData" :options="chartOptions" />
+    <Bar :data="chartData" :options="chartOptions" />
   </div>
 </template>

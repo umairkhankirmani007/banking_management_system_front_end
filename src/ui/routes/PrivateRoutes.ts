@@ -23,6 +23,15 @@ const privateRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
     },
   },
+  {
+    path: "/support",
+    name: "Support",
+    component: () => import("@/screens/SupportScreen.vue"),
+    meta: {
+      layout: "BaseLayout",
+      requiresAuth: true,
+    },
+  },
 ];
 
 export default privateRoutes;

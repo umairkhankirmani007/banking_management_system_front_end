@@ -8,6 +8,7 @@ import QuickActionWidgets from "../components/QuickActionWidgets.vue";
 import SendPaymentModal from "../components/SendPaymentModal.vue";
 import Table from "../components/Table.vue";
 import Payees from "../components/Payees.vue";
+import LineChart2 from "../components/LineChart2.vue";
 
 const columns = [
   { key: "date", label: "Date" },
@@ -61,9 +62,10 @@ const showModal = ref(false);
       class="md:col-span-2 row-span-2 space-y-5 bg-white p-4 shadow rounded-xl"
     >
       <h2 class="text-xl font-semibold mb-4">Overview</h2>
-      <div class="flex justify-between gap-10 items-center">
+      <div class="flex gap-5 items-center">
         <CreditCard />
-        <DonutChart />
+        <!-- <DonutChart /> -->
+        <LineChart2 class="flex-1" />
       </div>
       <h2 class="text-xl font-semibold">Recent Transactions</h2>
 
@@ -71,7 +73,7 @@ const showModal = ref(false);
     </section>
 
     <!-- Bottom Right Small Box -->
-    <section class="md:col-span-2 bg-white p-4 shadow rounded-xl">
+    <section class="md:col-span-2 bg-[#60B5FF60] p-4 shadow rounded-xl">
       <h2 class="text-xl font-semibold mb-4">Actions</h2>
       <QuickActionWidgets @openPymentModal="showModal = true" />
     </section>
