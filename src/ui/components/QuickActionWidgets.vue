@@ -2,6 +2,7 @@
 import { Icon } from "@iconify/vue/dist/iconify.js";
 import { ref } from "vue";
 import router from "../routes";
+import { generatePDF } from "../store/pdfGenerator";
 
 const quickActions = ref([
   {
@@ -19,28 +20,29 @@ const quickActions = ref([
     color: "#FCB45460",
   },
   {
+    id: "4",
+    title: "Add New Payee",
+    value: "dispute",
+    icon: "mdi:add-bold",
+    color: "#DCA06D60",
+  },
+  {
     id: "3",
     title: "Support",
     value: "support",
     icon: "mdi:customer-service",
     color: "#88304E60",
   },
-  {
-    id: "4",
-    title: "Open Dispute",
-    value: "dispute",
-    icon: "mdi:hand-front-left",
-    color: "#DCA06D60",
-  },
 ]);
 
-const emit = defineEmits(["openPymentModal"]);
+const emit = defineEmits(["openPymentModal", "openPayeeModal"]);
 
 const sendPayment = () => {
   emit("openPymentModal", true);
 };
 const openStatement = () => {
-  console.log("Statement function executed");
+  const content = "This is a sample PDF content.";
+  generatePDF(content);
 };
 
 const openSupport = () => {
@@ -48,7 +50,7 @@ const openSupport = () => {
 };
 
 const openDispute = () => {
-  console.log("Dispute function executed");
+  emit("openPayeeModal", true);
 };
 
 const handleActionClick = (value: string) => {
@@ -72,7 +74,9 @@ const handleActionClick = (value: string) => {
 </script>
 
 <template>
-  <section class="flex gap-2 items-center justify-between">
+  <section
+    class="flex gap-2 items-center justify-between flex-wrap lg:flex-nowrap"
+  >
     <div
       v-for="item in quickActions"
       :key="item.id"

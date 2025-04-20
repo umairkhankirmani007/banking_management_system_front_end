@@ -24,7 +24,18 @@ const props = defineProps({
   },
 });
 
-const modelValue = defineModel<string>();
+// Support both string and number types
+const modelValue = defineModel<string | number>();
+
+// Handle input events based on type
+function handleInput(e: Event) {
+  const target = e.target as HTMLInputElement;
+  if (props.type === "number") {
+    modelValue.value = target.valueAsNumber;
+  } else {
+    modelValue.value = target.value;
+  }
+}
 </script>
 
 <template>
@@ -39,7 +50,7 @@ const modelValue = defineModel<string>();
       :type="props.type"
       :placeholder="props.placeholder"
       :value="modelValue"
-      @input="modelValue = ($event.target as HTMLInputElement).value"
+      @input="handleInput"
       :class="[
         'border border-gray-300 rounded-md w-full bg-transparent focus:outline-none',
         'pl-10', // space for the icon

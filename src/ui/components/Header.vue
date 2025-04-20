@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import router from "../routes";
-import { userStore } from "../store/userInfo";
+import { useUserStore } from "../store/userInfo";
+import staticData from "../store/utils";
 
-const { user } = userStore();
+const userStore = useUserStore();
 
 const handleNavigate = () => {
   router.push("/profile");
-};
-
-const handleLogout = () => {
-  console.log("logout");
 };
 </script>
 
@@ -18,14 +15,14 @@ const handleLogout = () => {
     <h2 class="text-xl font-semibold">Dashboard Overview</h2>
     <div class="flex items-center gap-2">
       <button
-        @click="handleLogout"
+        @click="userStore.logout"
         class="bg-red-500 text-white rounded-full px-7 h-8 hover:bg-red-400 cursor-pointer"
       >
         Logout
       </button>
       <img
         @click="handleNavigate"
-        :src="user.image"
+        :src="staticData.userImage"
         class="rounded-full w-12 border-2 border-accent cursor-pointer"
       />
     </div>

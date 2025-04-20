@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import CreditCard from "../components/CreditCard.vue";
-import DonutChart from "../components/DonutChart.vue";
 import Header from "../components/Header.vue";
 import LineChart from "../components/LineChart.vue";
 import QuickActionWidgets from "../components/QuickActionWidgets.vue";
 import SendPaymentModal from "../components/SendPaymentModal.vue";
 import Table from "../components/Table.vue";
-import Payees from "../components/Payees.vue";
 import LineChart2 from "../components/LineChart2.vue";
+import PayeeCard from "../components/PayeeCard.vue";
+import NewPayeeModal from "../components/NewPayeeModal.vue";
 
 const columns = [
   { key: "date", label: "Date" },
@@ -46,6 +46,7 @@ const rows = [
 ];
 
 const showModal = ref(false);
+const payeeModal = ref(false);
 </script>
 
 <template>
@@ -62,7 +63,7 @@ const showModal = ref(false);
       class="md:col-span-2 row-span-2 space-y-5 bg-white p-4 shadow rounded-xl"
     >
       <h2 class="text-xl font-semibold mb-4">Overview</h2>
-      <div class="flex gap-5 items-center">
+      <div class="flex flex-col lg:flex-row gap-5 items-center">
         <CreditCard />
         <!-- <DonutChart /> -->
         <LineChart2 class="flex-1" />
@@ -73,9 +74,14 @@ const showModal = ref(false);
     </section>
 
     <!-- Bottom Right Small Box -->
-    <section class="md:col-span-2 bg-[#60B5FF60] p-4 shadow rounded-xl">
+    <section
+      class="md:col-span-2 bg-gradient-to-r from-40% from-[#60B5FF60] to-blue-400 p-4 shadow rounded-xl"
+    >
       <h2 class="text-xl font-semibold mb-4">Actions</h2>
-      <QuickActionWidgets @openPymentModal="showModal = true" />
+      <QuickActionWidgets
+        @openPymentModal="showModal = true"
+        @openPayeeModal="payeeModal = true"
+      />
     </section>
     <!-- Top Right Small Box -->
     <section class="md:col-span-2 bg-white p-4 shadow rounded-xl">
@@ -86,8 +92,10 @@ const showModal = ref(false);
     <!-- Bottom Full-Width Section -->
     <section class="md:col-span-4 bg-white p-4 shadow rounded-xl">
       <h2 class="text-xl font-semibold mb-4">Payees</h2>
-      <Payees />
+      <!-- <Payees /> -->
+      <PayeeCard />
     </section>
     <SendPaymentModal v-if="showModal" @close="showModal = false" />
+    <NewPayeeModal v-if="payeeModal" @close="payeeModal = false" />
   </main>
 </template>

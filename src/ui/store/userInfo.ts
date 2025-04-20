@@ -1,21 +1,40 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+import type { UserInterface } from "./helpers";
 
-export const userStore = defineStore("user/store", () => {
-  const user = ref({
-    id: "8713787847198192",
-    firstName: "Abdullah",
-    lastName: "Hussain",
-    email: "akaabdullah00@gmail.com",
-    image: "https://randomuser.me/api/portraits/men/76.jpg",
-    phoneNo: "03347155206",
-    balance: "98368",
-  });
+export const useUserStore = defineStore("user/store", () => {
+  const router = useRouter();
 
-  const userIsAuthenticated = ref<Boolean>(false);
+  const user = ref<UserInterface | null>(null);
+  const token = ref<string | null>(null);
+  const userIsAuthenticated = ref(false);
+
+  const setUser = (userData: UserInterface) => {
+    user.value = userData;
+    userIsAuthenticated.value = true;
+  };
+
+  const setToken = (newToken: string) => {
+    token.value = newToken;
+  };
+
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+    user.value = null;
+    token.value = null;
+    userIsAuthenticated.value = false;
+    router.push("/login");
+  };
 
   return {
-    userIsAuthenticated,
     user,
+    token,
+    userIsAuthenticated,
+    setUser,
+    setToken,
+    logout,
   };
 });

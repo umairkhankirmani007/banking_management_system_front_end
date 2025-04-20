@@ -5,7 +5,7 @@ import {
 } from "vue-router";
 import publicRoutes from "./publicRoutes";
 import privateRoutes from "./PrivateRoutes";
-import { userStore } from "../store/userInfo";
+import { useUserStore } from "../store/userInfo";
 
 const router = createRouter({
   history:
@@ -15,9 +15,8 @@ const router = createRouter({
   routes: [...publicRoutes, ...privateRoutes],
 });
 
-// 👇 Add this block for auth guarding
 router.beforeEach((to, _, next) => {
-  const user = userStore();
+  const user = useUserStore();
 
   if (to.meta.requiresAuth && !user.userIsAuthenticated) {
     next("/login");

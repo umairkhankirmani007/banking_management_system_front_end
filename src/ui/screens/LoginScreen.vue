@@ -1,46 +1,31 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import CInput from "../components/CInput.vue";
 import CButton from "../components/CButton.vue";
-import { userStore } from "../store/userInfo";
-import { useRouter } from "vue-router";
 import Tabs from "../components/Tabs.vue";
 
-const user = userStore();
-const router = useRouter();
-const formData = ref({
-  email: "",
-  password: "",
-});
-const currentTab = ref("login");
+import Loading from "../components/Loading.vue";
+import { useAuthStore } from "../store/AuthStore";
 
-const handleLogin = () => {
-  console.log("Submitted:", formData.value);
-  user.userIsAuthenticated = true;
-  router.push("/verify-otp");
-};
-
-const tabOptions = [
-  { label: "Login", value: "login" },
-  { label: "Sign Up", value: "signup" },
-];
+const authStore = useAuthStore();
 </script>
 
 <template>
   <main class="w-3/4 max-w-md mx-auto">
     <h2 class="text-6xl text-accent text-center mb-10">
-      {{ currentTab === "login" ? "Login" : "Sign up" }}
+      {{ authStore.currentTab === "login" ? "Login" : "Sign up" }}
     </h2>
 
     <Tabs
-      :tabs="tabOptions"
-      v-model="currentTab"
+      v-if="!authStore.isLoading"
+      :tabs="authStore.tabOptions"
+      v-model="authStore.currentTab"
       size="sm"
       :fullWidth="true"
       class="mb-6"
     />
 
     <Transition
+      v-if="!authStore.isLoading"
       name="fade"
       mode="out-in"
       enter-active-class="transition-opacity duration-300"
@@ -48,22 +33,22 @@ const tabOptions = [
       enter-from-class="opacity-0"
       leave-to-class="opacity-0"
     >
-      <div :key="currentTab">
+      <div :key="authStore.currentTab">
         <!-- Login Form -->
         <form
-          v-if="currentTab === 'login'"
-          @submit.prevent="handleLogin"
+          v-if="authStore.currentTab === 'login'"
+          @submit.prevent="authStore.handleLogin"
           class="space-y-5"
         >
           <CInput
-            v-model="formData.email"
+            v-model="authStore.loginFormData.email"
             placeholder="Enter your email"
             icon="mdi:email"
             width="w-full"
           />
           <CInput
             type="password"
-            v-model="formData.password"
+            v-model="authStore.loginFormData.password"
             placeholder="Enter your password"
             icon="mdi:lock"
             width="w-full"
@@ -78,33 +63,45 @@ const tabOptions = [
             Login
           </CButton>
         </form>
-
         <!-- Sign Up Form -->
-        <form v-else @submit.prevent="handleLogin" class="space-y-5">
+        <form v-else @submit.prevent="authStore.handleSignUp" class="space-y-5">
           <CInput
-            v-model="formData.email"
+            v-model="authStore.signupForm.firstName"
+            placeholder="First Name"
+            icon="mdi:user"
+            width="w-full"
+            required
+          />
+          <CInput
+            v-model="authStore.signupForm.lastName"
+            placeholder="Last Name"
+            icon="mdi:user"
+            width="w-full"
+            required
+          />
+          <CInput
+            v-model="authStore.signupForm.email"
             placeholder="Email"
+            type="email"
+            required
             icon="mdi:email"
             width="w-full"
           />
           <CInput
-            v-model="formData.email"
-            placeholder="First Name"
-            icon="mdi:user"
-            width="w-full"
-          />
-          <CInput
-            v-model="formData.email"
-            placeholder="Last Name"
-            icon="mdi:user"
-            width="w-full"
-          />
-          <CInput
             type="number"
-            v-model="formData.email"
+            v-model="authStore.signupForm.phoneNumber"
             placeholder="Phone Number"
             icon="mdi:phone"
             width="w-full"
+            required
+          />
+          <CInput
+            type="number"
+            v-model="authStore.signupForm.age"
+            placeholder="age"
+            icon="mdi:numeric-9-plus-circle-outline"
+            width="w-full"
+            required
           />
 
           <CButton
@@ -119,5 +116,6 @@ const tabOptions = [
         </form>
       </div>
     </Transition>
+    <Loading v-else />
   </main>
 </template>

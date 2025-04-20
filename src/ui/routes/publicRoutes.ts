@@ -19,6 +19,12 @@ const publicRoutes: RouteRecordRaw[] = [
     component: () => import("@/screens/OTPScreen.vue"),
     meta: { layout: "AuthLayout" },
   },
+  {
+    path: "/set-password",
+    name: "SetPasword",
+    component: () => import("@/screens/SetPasswordScreen.vue"),
+    meta: { layout: "AuthLayout" },
+  },
 ];
 
 export default publicRoutes;
