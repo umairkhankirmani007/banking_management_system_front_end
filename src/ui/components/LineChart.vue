@@ -1,54 +1,75 @@
 <script setup lang="ts">
-import { Bar } from "vue-chartjs"; // Change from Line to Bar
-import { ref } from "vue";
+import { Bar } from "vue-chartjs";
+import { computed } from "vue";
 import dayjs from "dayjs";
+import { useTransactionsStore } from "../store/TransactionsStore";
 
-// Generate last 10 days' labels
+// Store
+const transactionStore = useTransactionsStore();
+
+// Labels: Last 10 days
 const labels = Array.from({ length: 10 }, (_, i) =>
   dayjs()
     .subtract(9 - i, "day")
     .format("MMM D")
 );
 
-// Generate mock data
-const payments = labels.map(() => Math.floor(Math.random() * 5000) + 100);
+const dailyNetAmounts = computed(() => {
+  return Array.from({ length: 10 }, (_, i) => {
+    const targetDate = dayjs()
+      .subtract(9 - i, "day")
+      .format("YYYY-MM-DD");
 
-const chartData = ref({
+    let credited = 0;
+    let debited = 0;
+
+    transactionStore.tableData.forEach((txn) => {
+      if (txn.date === targetDate) {
+        if (txn.status === "CREDITED") credited += txn.amount;
+        else if (txn.status === "DEBITED") debited += txn.amount;
+      }
+    });
+
+    return credited - debited;
+  });
+});
+
+const chartData = computed(() => ({
   labels,
   datasets: [
     {
-      label: "Payments",
-      data: payments,
-      backgroundColor: "#3b82f6", // solid fill for bar
+      label: "Net Payments",
+      data: dailyNetAmounts.value,
+      backgroundColor: "#3b82f6",
       borderRadius: 6,
       barThickness: 20,
     },
   ],
-});
+}));
 
 const chartOptions = {
   responsive: true,
   plugins: {
     legend: {
       display: false,
-      position: "top" as const,
+    },
+    tooltip: {
+      callbacks: {
+        label: (context: any) => `$${context.parsed.y.toLocaleString("en-US")}`,
+      },
     },
   },
   scales: {
     x: {
-      grid: {
-        display: false,
-      },
+      grid: { display: false },
     },
     y: {
-      grid: {
-        display: false,
-      },
+      beginAtZero: true,
+      grid: { display: false },
       title: {
         display: true,
-        text: "Amount",
+        text: "Net Amount",
       },
-      beginAtZero: true,
     },
   },
 };

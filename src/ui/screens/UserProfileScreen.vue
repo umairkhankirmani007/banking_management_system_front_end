@@ -20,7 +20,7 @@ interface UserFormData {
 
 const userSession = useUserStore();
 
-const originalData: UserFormData = {
+const originalData = computed<UserFormData>(() => ({
   userId: userSession.user?.userId,
   firstName: userSession.user?.firstName || "",
   lastName: userSession.user?.lastName || "",
@@ -29,9 +29,9 @@ const originalData: UserFormData = {
   password: "",
   imageUrl: userSession.user?.imageUrl || "",
   age: userSession.user?.age || 0,
-};
+}));
 
-const formData = ref<UserFormData>({ ...originalData });
+const formData = ref<UserFormData>({ ...originalData.value });
 
 const userName = computed(() => {
   return `${formData.value.firstName} ${formData.value.lastName}`.trim();
@@ -60,11 +60,11 @@ function triggerFilePicker() {
 
 const isFormChanged = computed(() => {
   return (
-    formData.value.firstName !== originalData.firstName ||
-    formData.value.lastName !== originalData.lastName ||
-    formData.value.phoneNumber !== originalData.phoneNumber ||
-    formData.value.password !== originalData.password ||
-    formData.value.age !== originalData.age
+    formData.value.firstName !== originalData.value.firstName ||
+    formData.value.lastName !== originalData.value.lastName ||
+    formData.value.phoneNumber !== originalData.value.phoneNumber ||
+    formData.value.password !== originalData.value.password ||
+    formData.value.age !== originalData.value.age
   );
 });
 
@@ -84,6 +84,7 @@ const handleUserUpdate = async () => {
     const updatedUser = await api.patch("/api/users", payload);
     console.log(updatedUser);
     notify("User Profile Updated Successfully");
+    userSession.updateUserInfo();
   } catch (error) {
     notify("Error updating Profile", "error");
   } finally {
@@ -105,7 +106,7 @@ console.log(userSession.token);
       <div class="relative cursor-pointer" @click="triggerFilePicker">
         <img
           :src="formData.imageUrl || staticData.userImage"
-          class="w-24 h-24 rounded-full object-cover border-2 border-accent"
+          class="w-24 h-24 rounded-full object-cover object-top border-2 border-accent"
         />
         <input
           ref="fileInputRef"
@@ -151,12 +152,12 @@ console.log(userSession.token);
           type="text"
           v-model="formData.phoneNumber"
         />
-        <CInput
+        <!-- <CInput
           icon="mdi:password"
           placeholder="Password"
           type="text"
           v-model="formData.password"
-        />
+        /> -->
         <CInput
           icon="mdi:cake"
           placeholder="Age"

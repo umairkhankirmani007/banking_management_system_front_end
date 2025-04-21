@@ -1,39 +1,11 @@
 <script setup lang="ts">
-import { Icon } from "@iconify/vue/dist/iconify.js";
-import { ref } from "vue";
+import { Icon } from "@iconify/vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import Loading from "./Loading.vue";
+import staticData from "../store/utils";
+import { usePayeeStore } from "../store/PayeesStore";
 
-const payeeList = ref([
-  {
-    id: "8821384729832",
-    title: "Talha Mushtaq",
-    image: "https://randomuser.me/api/portraits/men/75.jpg",
-  },
-  {
-    id: "9821723456789",
-    title: "Sarah Johnson",
-    image: "https://randomuser.me/api/portraits/women/65.jpg",
-  },
-  {
-    id: "7632457890123",
-    title: "Michael Lee",
-    image: "https://randomuser.me/api/portraits/men/33.jpg",
-  },
-  {
-    id: "8934523678901",
-    title: "Emily Clark",
-    image: "https://randomuser.me/api/portraits/women/21.jpg",
-  },
-  {
-    id: "1092837465810",
-    title: "David Kim",
-    image: "https://randomuser.me/api/portraits/men/42.jpg",
-  },
-  {
-    id: "1209384756123",
-    title: "Ava Smith",
-    image: "https://randomuser.me/api/portraits/women/12.jpg",
-  },
-]);
+const payeeStore = usePayeeStore();
 
 const dropdownVisible = ref<string | null>(null);
 
@@ -41,63 +13,71 @@ const toggleDropdown = (id: string) => {
   dropdownVisible.value = dropdownVisible.value === id ? null : id;
 };
 
-const editPayee = (id: string) => {
-  alert(`Edit Payee ID: ${id}`);
+const handleClickOutside = (event: MouseEvent) => {
+  const target = event.target as HTMLElement;
+  if (!target.closest(".payee-dropdown")) {
+    dropdownVisible.value = null;
+  }
 };
 
-const deletePayee = (id: string) => {
-  alert(`Delete Payee ID: ${id}`);
-};
+onMounted(() => {
+  payeeStore.getUserPayees();
+  payeeStore.userPayeesList = [];
+  document.addEventListener("click", handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
 </script>
 
 <template>
-  <div class="grid grid-cols-4 gap-4 p-4">
+  <main>
     <div
-      v-for="payee in payeeList"
-      :key="payee.id"
-      class="relative bg-gradient-to-r from-gray-100 to-white rounded-xl shadow-lg p-4 flex items-center space-x-4 hover:shadow-xl transition"
+      v-if="!payeeStore?.isLoading"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4"
     >
-      <img
-        :src="payee.image"
-        alt="Payee image"
-        class="w-16 h-16 rounded-full object-cover"
-      />
-      <div class="flex-1">
-        <h3 class="text-lg font-semibold text-gray-800">{{ payee.title }}</h3>
-        <h3 class="text-sm text-gray-500">{{ payee.id }}</h3>
-      </div>
-
-      <div class="relative">
-        <Icon
-          icon="mdi:dots-vertical"
-          class="text-3xl cursor-pointer rounded-full text-gray-400"
-          @click="toggleDropdown(payee.id)"
+      <div
+        v-for="payee in payeeStore?.userPayeesList"
+        :key="payee._id"
+        class="relative bg-white rounded-xl shadow hover:shadow-lg transition-all duration-200 p-4 flex items-center gap-4"
+      >
+        <img
+          :src="payee.imageUrl || staticData.userImage"
+          alt="Payee image"
+          class="w-16 h-16 rounded-full object-cover object-top border border-gray-200"
         />
-        <div
-          v-if="dropdownVisible === payee.id"
-          class="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-md z-10"
-        >
-          <ul class="text-sm text-gray-700">
-            <li
-              class="px-4 flex items-center gap-2 py-2 hover:bg-gray-100 cursor-pointer"
-              @click="editPayee(payee.id)"
-            >
-              <Icon icon="mdi-edit" />
-              Edit
-            </li>
-            <li
-              class="px-4 py-2 hover:bg-gray-100 flex items-center gap-2 cursor-pointer"
-              @click="deletePayee(payee.id)"
-            >
-              <Icon icon="mdi:delete-empty" />
+        <div class="flex-1 overflow-hidden">
+          <h3 class="text-base font-semibold text-gray-800 truncate">
+            {{ payee.userName }}
+          </h3>
+          <h2 class="text-xs text-gray-500 truncate">{{ payee.email }}</h2>
+          <h2 class="text-sm text-gray-400 truncate">{{ payee._id }}</h2>
+        </div>
 
-              Delete
-            </li>
-          </ul>
+        <div class="relative payee-dropdown">
+          <Icon
+            icon="mdi:dots-vertical"
+            class="text-2xl text-gray-500 cursor-pointer"
+            @click.stop="toggleDropdown(payee._id)"
+          />
+          <div
+            v-if="dropdownVisible === payee._id"
+            class="absolute right-0 top-8 w-32 bg-white rounded-md shadow-lg z-50"
+          >
+            <ul class="text-sm text-gray-700">
+              <li
+                class="px-4 py-2 flex items-center gap-2 hover:bg-gray-100 cursor-pointer"
+                @click="payeeStore.deletePayee(payee._id)"
+              >
+                <Icon icon="mdi:delete-empty" /> Delete
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+    <Loading v-else />
+    <h3 v-if="payeeStore?.userPayeesList.length == 0">No Pyees Added</h3>
+  </main>
 </template>
-
-<style scoped></style>

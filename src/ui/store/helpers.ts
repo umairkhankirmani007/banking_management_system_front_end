@@ -72,6 +72,7 @@ export function validateForm(
 
 import axios from "axios";
 import { useUserStore } from "./userInfo";
+import { usePayeeStore } from "./PayeesStore";
 
 export const api = axios.create({
   baseURL: "https://banking-management-system-backend-nine.vercel.app",
@@ -173,15 +174,47 @@ export async function uploadImage(imageFile: File): Promise<void> {
     );
     console.log(response.data);
     notify("Image updated successfully", "success");
-    return response.data; // You might want to return the response data
+    userStore.updateUserInfo();
+    return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error("Axios error:", error.response?.data || error.message);
-      throw error; // Re-throw the error for handling in the component
+      throw error;
     } else {
       notify("Unable to update image", "error");
       console.error("Error uploading image:", error);
-      throw error; // Re-throw the error for handling in the component
+      throw error;
     }
   }
+}
+
+//validate payee selecton
+export function validatePayeeSelection(
+  foundUser: { userId: string } | undefined,
+  currentUserId: string | undefined,
+  notifyFn: (msg: string, type: string) => void
+): boolean {
+  if (!foundUser || foundUser.userId === currentUserId) {
+    const message = !foundUser
+      ? "Payee not found"
+      : "You cannot add yourself as a payee";
+
+    notifyFn(message, "error");
+    return false;
+  }
+  return true;
+}
+
+export function validatePayee(id: string | number) {
+  const userStore = useUserStore();
+  const payeeStore = usePayeeStore();
+
+  const currentUserId = userStore.user?.userId;
+
+  if (!currentUserId || id === currentUserId) {
+    return false;
+  }
+
+  const payee = payeeStore.allAppUsers.find((item) => item.userId === id);
+  return payee || false;
 }

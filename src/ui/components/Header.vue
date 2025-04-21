@@ -22,8 +22,8 @@ const handleNavigate = () => {
       </button>
       <img
         @click="handleNavigate"
-        :src="staticData.userImage"
-        class="rounded-full w-12 border-2 border-accent cursor-pointer"
+        :src="userStore.user?.imageUrl || staticData.userImage"
+        class="rounded-full h-12 w-12 object-cover border-2 object-top border-accent cursor-pointer"
       />
     </div>
   </div>

@@ -3,32 +3,28 @@ import { ref } from "vue";
 import Stepper from "./Stepper.vue";
 import Tabs from "./Tabs.vue";
 import { Icon } from "@iconify/vue/dist/iconify.js";
-import { notify } from "../store/helpers";
+import { notify, validatePayee } from "../store/helpers";
 import CInput from "./CInput.vue";
 import TransitionComponent from "./TransitionComponent.vue";
-
-interface Payee {
-  id: string;
-  title: string | null;
-}
+import { useUserStore } from "../store/userInfo";
+import { usePayeeStore } from "../store/PayeesStore";
+import type { AppUser, Payee } from "../store/interfaces";
+import staticData from "../store/utils";
+import { useTransactionsStore } from "../store/TransactionsStore";
+import Loading from "./Loading.vue";
 
 const emit = defineEmits(["close"]);
 const emitClose = () => emit("close");
+
+const userStore = useUserStore();
+const payeeStore = usePayeeStore();
+const transactionStore = useTransactionsStore();
 
 const steps = [
   { id: "1", title: "Select Payee", value: "step1", icon: "mdi:user-add" },
   { id: "2", title: "Select Amount", value: "step2", icon: "mdi:euro" },
   { id: "3", title: "Confirm", value: "step3", icon: "mdi:tick-circle" },
 ];
-
-const payeesList = ref<Payee[]>([
-  { id: "18717749231921", title: "Arslan Matllob" },
-  { id: "23423421321321", title: "Talha Mushtaq" },
-  { id: "45343242321312", title: "Muhammad Imran" },
-  { id: "56564564543454", title: "Fahad Butt" },
-  { id: "86576564345343", title: "Umair Khan" },
-  { id: "42342433432434", title: "Ali Qasim" },
-]);
 
 const tabOptions = [
   { label: "Existing User", value: "existing" },
@@ -40,17 +36,36 @@ const paymentOptions = ref({
   currentStep: 0,
   selectedUser: "",
   amount: "",
+  message: "",
 });
+
+const validatedPayee = ref<Partial<AppUser>>({});
+// const validatedPayee = ref(null);
 
 const onUserSelection = () => {
   const { currentStep, selectedUser, amount } = paymentOptions.value;
 
-  if (!selectedUser) {
+  if (currentStep === 0 && !selectedUser) {
     return notify("Please select a user", "error");
   }
 
-  if (currentStep === 1 && (!amount || Number(amount) <= 0)) {
-    return notify("Please enter a valid amount", "error");
+  if (currentStep === 1) {
+    const numericAmount = Number(amount);
+    const userBalance = userStore.user?.balance ?? 0;
+
+    if (!amount || numericAmount <= 0) {
+      return notify("Please enter a valid amount", "error");
+    }
+
+    if (numericAmount > userBalance) {
+      return notify("Insufficient balance", "error");
+    }
+
+    const result = validatePayee(selectedUser);
+    if (!result) {
+      return notify("Invalid payee selected", "error");
+    }
+    validatedPayee.value = result;
   }
 
   if (currentStep === 2) {
@@ -66,6 +81,17 @@ const stepBack = () =>
     paymentOptions.value.currentStep - 1,
     0
   ));
+
+const handleSendPayment = () => {
+  transactionStore.SendPayment(
+    paymentOptions.value.amount,
+    paymentOptions.value.selectedUser,
+    paymentOptions.value.message
+  );
+  paymentOptions.value.amount = "";
+  paymentOptions.value.message = "";
+  paymentOptions.value.selectedUser = "";
+};
 </script>
 
 <template>
@@ -91,7 +117,6 @@ const stepBack = () =>
         <Stepper :steps="steps" :currentStep="paymentOptions.currentStep" />
       </section>
 
-      <!-- Wrapped in your TransitionComponent -->
       <TransitionComponent
         :step="paymentOptions.currentStep"
         transition="slide"
@@ -121,9 +146,9 @@ const stepBack = () =>
             <v-select
               v-if="paymentOptions.currentTab === 'existing'"
               v-model="paymentOptions.selectedUser"
-              :options="payeesList"
-              :reduce="(user: Payee) => user.id"
-              label="title"
+              :options="payeeStore.userPayeesList"
+              :reduce="(user: Payee) => user._id"
+              label="userName"
               class="w-full"
               placeholder="Search..."
             />
@@ -134,13 +159,13 @@ const stepBack = () =>
               placeholder="Account Number"
               icon="mdi:bank"
               width="w-full"
-              type="number"
+              type="text"
               focused
             />
 
             <button
               @click="onUserSelection"
-              class="w-full h-10 rounded-md bg-accent text-white hover:bg-indigo-300 duration-200 cursor-pointer font-bold"
+              class="w-full h-10 mt-10 rounded-md bg-accent text-white hover:bg-indigo-300 duration-200 cursor-pointer font-bold"
             >
               Next
             </button>
@@ -154,7 +179,7 @@ const stepBack = () =>
               class="flex items-center flex-col gap-1 w-fit p-2 text-midDark rounded-lg font-semibold"
             >
               Available balance
-              <h3 class="text-2xl">63283 £</h3>
+              <h3 class="text-2xl">£ {{ userStore.user?.balance }}</h3>
             </div>
             <div class="space-y-5 w-full">
               <CInput
@@ -177,19 +202,45 @@ const stepBack = () =>
 
         <!-- Step 2 -->
         <template #step2>
-          <section class="w-full mt-10 space-y-5">
-            <div class="flex items-center w-full justify-center">
-              <h2 class="font-semibold">
-                You are about to send {{ paymentOptions.amount }} £ to
-              </h2>
+          <section
+            v-if="!transactionStore.isLoading"
+            class="w-full mt-10 space-y-5"
+          >
+            <div
+              class="w-full rounded-lg space-y-3 shadow-sm bg-gray p-3 px-10"
+            >
+              <div class="flex items-center justify-center">
+                <img
+                  :src="validatedPayee.imageUrl || staticData.userImage"
+                  class="h-20 w-20 object-cover object-top rounded-full border border-accent"
+                />
+              </div>
+              <div class="flex justify-between font-semibold text-midDark">
+                <h2>User Name:</h2>
+                <h2>{{ validatedPayee.userName }}</h2>
+              </div>
+              <div class="flex justify-between font-semibold text-midDark">
+                <h2>Account Number:</h2>
+                <h2>{{ validatedPayee.userId }}</h2>
+              </div>
+              <div class="flex justify-between font-semibold text-midDark">
+                <h2>Amount:</h2>
+                <h2>RS: {{ paymentOptions.amount }}</h2>
+              </div>
             </div>
+            <textarea
+              v-model="paymentOptions.message"
+              class="border border-gray p-2 rounded-lg h-20 w-full"
+              placeholder="Message..."
+            />
             <button
-              @click="onUserSelection"
+              @click="handleSendPayment"
               class="w-full h-10 rounded-md bg-accent text-white hover:bg-indigo-300 duration-200 cursor-pointer font-bold"
             >
               Confirm
             </button>
           </section>
+          <Loading v-else />
         </template>
       </TransitionComponent>
     </div>

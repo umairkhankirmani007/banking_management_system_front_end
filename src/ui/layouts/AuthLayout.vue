@@ -7,6 +7,8 @@
         <h2 class="text-text text-5xl text-center font-bold">
           Banking Management System
         </h2>
+        <h2 class="text-center">geidekauneutei-4597@yopmail.com</h2>
+        <h2 class="text-center">6804fd5795273f04d36e8e88</h2>
         <h4 class="text-dark text-lg text-center max-w-2xl mx-auto">
           Secure, fast, and user-friendly banking at your fingertips. Open an
           account, manage your finances, and track your transactions—all in one

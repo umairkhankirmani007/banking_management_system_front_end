@@ -21,7 +21,7 @@ const quickActions = ref([
   },
   {
     id: "4",
-    title: "Add New Payee",
+    title: "New Payee",
     value: "dispute",
     icon: "mdi:add-bold",
     color: "#DCA06D60",
@@ -33,9 +33,20 @@ const quickActions = ref([
     icon: "mdi:customer-service",
     color: "#88304E60",
   },
+  {
+    id: "5",
+    title: "Top Up",
+    value: "topup",
+    icon: "mdi:attach-money",
+    color: "#88304E60",
+  },
 ]);
 
-const emit = defineEmits(["openPymentModal", "openPayeeModal"]);
+const emit = defineEmits([
+  "openPymentModal",
+  "openPayeeModal",
+  "openTopUpModel",
+]);
 
 const sendPayment = () => {
   emit("openPymentModal", true);
@@ -53,6 +64,10 @@ const openDispute = () => {
   emit("openPayeeModal", true);
 };
 
+const topUpMoney = () => {
+  emit("openTopUpModel", true);
+};
+
 const handleActionClick = (value: string) => {
   switch (value) {
     case "sendMoney":
@@ -66,6 +81,9 @@ const handleActionClick = (value: string) => {
       break;
     case "dispute":
       openDispute();
+      break;
+    case "topup":
+      topUpMoney();
       break;
     default:
       console.log("Unknown action");
@@ -81,7 +99,7 @@ const handleActionClick = (value: string) => {
       v-for="item in quickActions"
       :key="item.id"
       @click="handleActionClick(item.value)"
-      class="p-3 cursor-pointer text-midDark bg-white hover:bg-accent hover:scale-105 duration-100 shadow-md font-semibold w-[210px] h-15 flex items-center rounded-full justify-center gap-3"
+      class="p-2 cursor-pointer text-midDark bg-white hover:bg-accent hover:scale-105 duration-100 shadow-md font-semibold w-[210px] h-15 flex items-center rounded-full justify-center gap-3"
     >
       <Icon class="text-4xl" :icon="item.icon" />
       <h2>{{ item.title }}</h2>

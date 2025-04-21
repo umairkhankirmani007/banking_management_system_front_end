@@ -1,12 +1,15 @@
+<!-- TransactionTable.vue -->
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
 
+// Props
 const props = defineProps<{
   columns: { key: string; label: string }[];
   rows: Record<string, any>[];
   rowsPerPage?: number;
 }>();
 
+// Pagination state
 const currentPage = ref(1);
 const perPage = ref(props.rowsPerPage || 5);
 
@@ -17,10 +20,11 @@ const paginatedRows = computed(() => {
   return props.rows.slice(start, start + perPage.value);
 });
 
+// Reset to page 1 when rows change
 watch(
   () => props.rows,
   () => {
-    currentPage.value = 1; // Reset to first page if data changes
+    currentPage.value = 1;
   }
 );
 </script>
@@ -50,18 +54,22 @@ watch(
             :key="col.key"
             class="py-2 px-4 border-b border-gray-200"
           >
-            {{ row[col.key] }}
+            <span v-if="col.key === 'tid'">
+              {{ row[col.key]?.slice(0, 8) }}...
+            </span>
+            <span v-else>
+              {{ row[col.key] }}
+            </span>
           </td>
         </tr>
         <tr v-if="!rows.length">
           <td :colspan="columns.length" class="text-center py-4 text-gray-500">
-            No data found.
+            <h2>No Record Found</h2>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <!-- Pagination -->
     <div class="flex justify-between items-center mt-4 text-sm text-gray-700">
       <p>Page {{ currentPage }} of {{ totalPages }}</p>
       <div class="flex items-center gap-2">

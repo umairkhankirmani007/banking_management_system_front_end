@@ -5,10 +5,15 @@ import { Icon } from "@iconify/vue"; // Shorter import
 import { notify } from "../store/helpers";
 import CInput from "./CInput.vue";
 import TransitionComponent from "./TransitionComponent.vue";
+import { usePayeeStore } from "../store/PayeesStore";
+import { type AppUser } from "../store/interfaces";
+import staticData from "../store/utils";
+import { useUserStore } from "../store/userInfo";
 
 const emit = defineEmits(["close"]);
 const emitClose = () => emit("close");
 
+const payeeStore = usePayeeStore();
 interface Step {
   id: string;
   title: string;
@@ -24,11 +29,34 @@ const steps: Step[] = [
 const currentStep = ref(0);
 const accountNumber = ref("");
 
-const handleNewPayeeSubmit = () => {
+const newPayee = ref<Partial<AppUser> | undefined>(undefined);
+const payeeNotFound = ref(false);
+const userStore = useUserStore();
+const searchPayee = () => {
   if (accountNumber.value.length < 5) {
     notify("Enter a valid Account Number", "error");
     return;
   }
+
+  const foundUser = payeeStore.allAppUsers.find(
+    (item) => item.userId === accountNumber.value
+  );
+
+  const currentUserId = userStore.user?.userId;
+
+  if (!foundUser || foundUser.userId === currentUserId) {
+    payeeNotFound.value = true;
+
+    const message = !foundUser
+      ? "Payee not found"
+      : "You cannot add yourself as a payee";
+
+    notify(message, "error");
+    return;
+  }
+
+  newPayee.value = foundUser;
+  payeeNotFound.value = false;
   currentStep.value = 1;
 };
 
@@ -69,11 +97,11 @@ const stepBack = () => {
               placeholder="Account Number"
               icon="mdi:bank"
               width="w-full"
-              type="number"
+              type="text"
               focused
             />
             <button
-              @click="handleNewPayeeSubmit"
+              @click="searchPayee"
               class="w-full h-10 rounded-md bg-accent text-white hover:bg-indigo-300 duration-200 cursor-pointer font-bold"
             >
               Next
@@ -82,7 +110,28 @@ const stepBack = () => {
         </template>
         <template #step1>
           <section class="w-full">
-            <h3 class="text-xl font-semibold">Confirm</h3>
+            <div class="px-14 py-3 text-midDark bg-gray rounded-xl space-y-5">
+              <div class="flex items-center justify-center">
+                <img
+                  :src="newPayee?.imageUrl || staticData.userImage"
+                  class="h-20 w-20 object-cover object-top rounded-full border-accent border"
+                />
+              </div>
+              <div class="flex justify-between w-full">
+                <h3 class="text-xl font-semibold">User Name :</h3>
+                <h3 class="text-xl font-semibold">{{ newPayee?.userName }}</h3>
+              </div>
+              <div class="flex justify-between w-full">
+                <h3 class="text-xl font-semibold">Account Number :</h3>
+                <h3 class="text-xl font-semibold">{{ newPayee?.userId }}</h3>
+              </div>
+              <button
+                @click="payeeStore.addnewPayee(accountNumber)"
+                class="w-full h-10 rounded-md bg-accent text-white hover:bg-indigo-300 duration-200 cursor-pointer font-bold"
+              >
+                Confirm
+              </button>
+            </div>
           </section>
         </template>
       </TransitionComponent>

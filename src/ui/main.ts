@@ -54,7 +54,8 @@ const userData = localStorage.getItem("user");
 if (token && userData && authStore.isTokenValid(token)) {
   userStore.userIsAuthenticated = true;
   userStore.setToken(token);
-  userStore.setUser(JSON.parse(userData));
+  userStore.updateUserInfo();
+  // userStore.setUser(JSON.parse(userData));
 }
 
 app.mount("#app");

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import CreditCard from "../components/CreditCard.vue";
 import Header from "../components/Header.vue";
 import LineChart from "../components/LineChart.vue";
@@ -9,44 +8,25 @@ import Table from "../components/Table.vue";
 import LineChart2 from "../components/LineChart2.vue";
 import PayeeCard from "../components/PayeeCard.vue";
 import NewPayeeModal from "../components/NewPayeeModal.vue";
+import TopUpModal from "../components/TopUpModal.vue";
+import { addnewPyeeModal, sendMoneyModal, topUpModal } from "../store/Scopes";
+import { onMounted } from "vue";
+import { useTransactionsStore } from "../store/TransactionsStore";
+import Loading from "../components/Loading.vue";
 
 const columns = [
-  { key: "date", label: "Date" },
-  { key: "description", label: "Description" },
+  { key: "userName", label: "User" },
   { key: "amount", label: "Amount" },
-  { key: "type", label: "Type" },
+  { key: "status", label: "Transaction Type" }, // assuming 'status' shows Credit/Debit
+  { key: "date", label: "Date" },
+  { key: "time", label: "Time" },
+  { key: "tid", label: "TID" },
 ];
 
-const rows = [
-  {
-    date: "2025-04-01",
-    description: "ATM Withdrawal",
-    amount: "-$200",
-    type: "Debit",
-  },
-  {
-    date: "2025-04-02",
-    description: "Salary",
-    amount: "+$3,000",
-    type: "Credit",
-  },
-  {
-    date: "2025-04-03",
-    description: "Grocery",
-    amount: "-$150",
-    type: "Debit",
-  },
-  {
-    date: "2025-04-04",
-    description: "Electric Bill",
-    amount: "-$100",
-    type: "Debit",
-  },
-  { date: "2025-04-05", description: "Bonus", amount: "+$500", type: "Credit" },
-];
-
-const showModal = ref(false);
-const payeeModal = ref(false);
+const transactionStore = useTransactionsStore();
+onMounted(() => {
+  transactionStore.GetTransactionsHistory();
+});
 </script>
 
 <template>
@@ -70,7 +50,13 @@ const payeeModal = ref(false);
       </div>
       <h2 class="text-xl font-semibold">Recent Transactions</h2>
 
-      <Table :columns="columns" :rows="rows" :rowsPerPage="7" />
+      <Table
+        v-if="!transactionStore.isLoading"
+        :columns="columns"
+        :rows="transactionStore.tableData"
+        :rowsPerPage="7"
+      />
+      <Loading v-else />
     </section>
 
     <!-- Bottom Right Small Box -->
@@ -79,8 +65,9 @@ const payeeModal = ref(false);
     >
       <h2 class="text-xl font-semibold mb-4">Actions</h2>
       <QuickActionWidgets
-        @openPymentModal="showModal = true"
-        @openPayeeModal="payeeModal = true"
+        @openPymentModal="sendMoneyModal = true"
+        @openPayeeModal="addnewPyeeModal = true"
+        @open-top-up-model="topUpModal = true"
       />
     </section>
     <!-- Top Right Small Box -->
@@ -95,7 +82,8 @@ const payeeModal = ref(false);
       <!-- <Payees /> -->
       <PayeeCard />
     </section>
-    <SendPaymentModal v-if="showModal" @close="showModal = false" />
-    <NewPayeeModal v-if="payeeModal" @close="payeeModal = false" />
+    <SendPaymentModal v-if="sendMoneyModal" @close="sendMoneyModal = false" />
+    <NewPayeeModal v-if="addnewPyeeModal" @close="addnewPyeeModal = false" />
+    <TopUpModal v-if="topUpModal" @close="topUpModal = false" />
   </main>
 </template>
