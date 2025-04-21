@@ -52,8 +52,7 @@ const sendPayment = () => {
   emit("openPymentModal", true);
 };
 const openStatement = () => {
-  const content = "This is a sample PDF content.";
-  generatePDF(content);
+  generatePDF();
 };
 
 const openSupport = () => {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Line } from "vue-chartjs";
-import { ref, computed, watchEffect } from "vue";
+import { computed } from "vue";
 import dayjs from "dayjs";
 import { useTransactionsStore } from "../store/TransactionsStore";
 
@@ -30,7 +30,6 @@ const totalLast10Days = computed(() => {
   }
 
   const last10DaysData = transactionStore.tableData.filter((txn) => {
-    const txnDate = dayjs(txn.date).format("YYYY-MM-DD");
     return labels.includes(dayjs(txn.date).format("MMM D"));
   });
 
