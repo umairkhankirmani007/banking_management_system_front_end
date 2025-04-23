@@ -78,6 +78,8 @@ onBeforeUnmount(() => {
       </div>
     </div>
     <Loading v-else />
-    <h3 v-if="payeeStore?.userPayeesList.length == 0">No Pyees Added</h3>
+    <div class="w-full text-center py-5 text-xl">
+      <h3 v-if="payeeStore?.userPayeesList.length == 0">No Pyees Added yet</h3>
+    </div>
   </main>
 </template>

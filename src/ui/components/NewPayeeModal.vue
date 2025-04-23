@@ -9,6 +9,7 @@ import { usePayeeStore } from "../store/PayeesStore";
 import { type AppUser } from "../store/interfaces";
 import staticData from "../store/utils";
 import { useUserStore } from "../store/userInfo";
+import Loading from "./Loading.vue";
 
 const emit = defineEmits(["close"]);
 const emitClose = () => emit("close");
@@ -109,7 +110,7 @@ const stepBack = () => {
           </section>
         </template>
         <template #step1>
-          <section class="w-full">
+          <section v-if="!payeeStore.isLoading" class="w-full">
             <div class="px-14 py-3 text-midDark bg-gray rounded-xl space-y-5">
               <div class="flex items-center justify-center">
                 <img
@@ -133,6 +134,7 @@ const stepBack = () => {
               </button>
             </div>
           </section>
+          <Loading v-else />
         </template>
       </TransitionComponent>
     </div>

@@ -32,6 +32,16 @@ const privateRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
     },
   },
+
+  {
+    path: "/admin",
+    name: "Admin",
+    component: () => import("@/screens/AdminScreen.vue"),
+    meta: {
+      layout: "BaseLayout",
+      requiresAuth: true,
+    },
+  },
 ];
 
 export default privateRoutes;

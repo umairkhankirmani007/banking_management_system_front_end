@@ -2,7 +2,12 @@
 import { ref } from "vue";
 import BackButton from "../components/BackButton.vue";
 import CInput from "../components/CInput.vue";
-import { notify, validateForm, type ValidationRules } from "../store/helpers";
+import {
+  api,
+  notify,
+  validateForm,
+  type ValidationRules,
+} from "../store/helpers";
 
 const formData = ref({
   email: "",
@@ -10,13 +15,13 @@ const formData = ref({
   message: "",
 });
 
+const isLoading = ref(false);
 const rules: ValidationRules = {
   email: { required: true, type: "email" },
   subject: { required: true, minLength: 3 },
   message: { required: true, minLength: 10 },
 };
-
-const handleSFormSubmit = () => {
+const handleSFormSubmit = async () => {
   const { valid, errors } = validateForm(formData.value, rules);
 
   if (!valid) {
@@ -25,7 +30,19 @@ const handleSFormSubmit = () => {
     return;
   }
 
-  notify("Email Sent To Support Staff", "info");
+  isLoading.value = true;
+
+  try {
+    await api.post("/api/contact", formData.value);
+    notify("Query Submitted Successfully", "success");
+    formData.value.email = "";
+    formData.value.subject = "";
+    formData.value.message = "";
+  } catch (error) {
+    notify("Unable to send Query", "error");
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 
@@ -74,10 +91,11 @@ const handleSFormSubmit = () => {
       </div>
 
       <button
+        :disabled="isLoading"
         class="bg-accent font-semibold w-full h-10 text-white rounded-md hover:bg-indigo-300 transition"
         type="submit"
       >
-        Send Message
+        {{ isLoading ? "Sending Query to CSR Team" : "Submit" }}
       </button>
     </form>
   </main>

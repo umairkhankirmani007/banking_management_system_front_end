@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { api, notify, type UserInterface } from "./helpers";
+import { api, type UserInterface } from "./helpers";
 
 export const useUserStore = defineStore("user/store", () => {
   const router = useRouter();
@@ -26,9 +26,9 @@ export const useUserStore = defineStore("user/store", () => {
     try {
       isLoading.value = false;
       const response = await api.get("/api/users/");
-      console.log(response.data);
+      // console.log(response.data);
       setUser(response.data.data);
-      notify("Userinfo Updated Successfully", "info");
+      // notify("Userinfo Updated Successfully", "info");
     } catch (error) {
       isLoading.value = false;
       console.log(error);

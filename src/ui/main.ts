@@ -6,6 +6,7 @@ import { createPinia } from "pinia";
 import "vue3-toastify/dist/index.css";
 import vSelect from "vue-select";
 import { useUserStore } from "./store/userInfo";
+import HighchartsVue from "highcharts-vue";
 import {
   Chart as ChartJS,
   Title,
@@ -42,6 +43,7 @@ const pinia = createPinia();
 
 app.use(pinia);
 app.use(router);
+app.use(HighchartsVue);
 // app.use(toast);
 app.component("v-select", vSelect);
 app.component("TransitionComponent", TransitionComponent);

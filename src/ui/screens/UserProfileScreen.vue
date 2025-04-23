@@ -105,7 +105,7 @@ console.log(userSession.token);
       <!-- Editable Image -->
       <div class="relative cursor-pointer" @click="triggerFilePicker">
         <img
-          :src="formData.imageUrl || staticData.userImage"
+          :src="userSession.user?.imageUrl || staticData.userImage"
           class="w-24 h-24 rounded-full object-cover object-top border-2 border-accent"
         />
         <input

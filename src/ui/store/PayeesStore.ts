@@ -20,7 +20,7 @@ export const usePayeeStore = defineStore("payeeStore", () => {
     try {
       isLoading.value = true;
       const response = await api.get<PayeeApiResponse>("/api/payees/");
-      console.log(response.data.data);
+      // console.log(response.data.data);
       userPayeesList.value = response.data.data;
     } catch (error) {
       console.error(error);
@@ -61,10 +61,9 @@ export const usePayeeStore = defineStore("payeeStore", () => {
 
     try {
       isLoading.value = true;
-      const response = await api.delete("/api/payees/", {
+      await api.delete("/api/payees/", {
         data: payload,
       });
-      console.log(response.data);
       getUserPayees();
       isLoading.value = false;
     } catch (error) {
@@ -87,7 +86,7 @@ export const usePayeeStore = defineStore("payeeStore", () => {
       isLoading.value = false;
       topUpModal.value = false;
       userStore.updateUserInfo();
-      transactionsStore.GetTransactionsHistory();
+      transactionsStore.GetAllUsersTransactions();
     } catch (error) {
       isLoading.value = false;
       console.log(error);

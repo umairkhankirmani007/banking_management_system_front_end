@@ -1,15 +1,15 @@
-<!-- TransactionTable.vue -->
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
+import staticData from "../store/utils";
+import type { SimplifiedTransaction } from "../store/interfaces";
 
-// Props
 const props = defineProps<{
   columns: { key: string; label: string }[];
-  rows: Record<string, any>[];
+  rows: SimplifiedTransaction[];
   rowsPerPage?: number;
+  loggedUserId?: string;
 }>();
 
-// Pagination state
 const currentPage = ref(1);
 const perPage = ref(props.rowsPerPage || 5);
 
@@ -20,13 +20,34 @@ const paginatedRows = computed(() => {
   return props.rows.slice(start, start + perPage.value);
 });
 
-// Reset to page 1 when rows change
 watch(
   () => props.rows,
   () => {
     currentPage.value = 1;
   }
 );
+
+function getTransactionType(
+  senderID: string,
+  receiverID: string,
+  message: string
+): string {
+  // Explicitly check for Top-Up first
+  if (message.toLowerCase().includes("top-up")) {
+    return "Top-Up";
+  }
+
+  // Now check debit/credit
+  if (senderID === props.loggedUserId) {
+    return "Debited";
+  } else if (receiverID === props.loggedUserId) {
+    return "Credited";
+  }
+
+  return "Other"; // Fallback
+}
+
+console.log(props.rows);
 </script>
 
 <template>
@@ -54,22 +75,68 @@ watch(
             :key="col.key"
             class="py-2 px-4 border-b border-gray-200"
           >
-            <span v-if="col.key === 'tid'">
-              {{ row[col.key]?.slice(0, 8) }}...
-            </span>
-            <span v-else>
-              {{ row[col.key] }}
-            </span>
+            <template v-if="col.key === 'transactionID'">
+              {{ row.transactionID.slice(0, 8) }}...
+            </template>
+
+            <template v-else-if="col.key === 'sender'">
+              <div class="flex items-center gap-2">
+                <img
+                  :src="row.senderImage || staticData.userImage"
+                  alt="Sender"
+                  class="w-8 h-8 rounded-full object-cover"
+                />
+                <span>{{ row.sender }}</span>
+              </div>
+            </template>
+
+            <template v-else-if="col.key === 'receivedBy'">
+              <div class="flex items-center gap-2">
+                <img
+                  :src="row.receiverImage || staticData.userImage"
+                  alt="Recipient"
+                  class="w-8 h-8 rounded-full object-cover"
+                />
+                <span>{{ row.receivedBy }}</span>
+              </div>
+            </template>
+
+            <template v-else-if="col.key === 'message'">
+              {{
+                getTransactionType(row.senderID, row.receiverID, row.message)
+              }}
+            </template>
+
+            <template v-else-if="col.key === 'status'">
+              <span
+                :class="{
+                  'text-green-600': row.status === 'completed',
+                  'text-yellow-600': row.status === 'pending',
+                  'text-red-600': row.status === 'failed',
+                }"
+              >
+                {{ row.status }}
+              </span>
+            </template>
+
+            <template v-else>
+              <!-- {{ row[col.key] }} -->
+            </template>
           </td>
         </tr>
+
         <tr v-if="!rows.length">
-          <td :colspan="columns.length" class="text-center py-4 text-gray-500">
+          <td
+            :colspan="columns.length"
+            class="text-center h-52 py-4 text-gray-500"
+          >
             <h2>No Record Found</h2>
           </td>
         </tr>
       </tbody>
     </table>
 
+    <!-- Pagination -->
     <div class="flex justify-between items-center mt-4 text-sm text-gray-700">
       <p>Page {{ currentPage }} of {{ totalPages }}</p>
       <div class="flex items-center gap-2">

@@ -15,14 +15,29 @@ const router = createRouter({
   routes: [...publicRoutes, ...privateRoutes],
 });
 
-router.beforeEach((to, _, next) => {
-  const user = useUserStore();
+router.beforeEach(async (to, _, next) => {
+  const userStore = useUserStore();
 
-  if (to.meta.requiresAuth && !user.userIsAuthenticated) {
-    next("/login");
-  } else {
-    next();
+  // Restore user info if accessToken exists
+  if (!userStore.user && localStorage.getItem("accessToken")) {
+    await userStore.updateUserInfo();
   }
+
+  // Block unauthenticated access
+  if (to.meta.requiresAuth && !userStore.userIsAuthenticated) {
+    return next("/login");
+  }
+
+  // Redirect admin to /admin only if they go to root or dashboard
+  if (
+    userStore.userIsAuthenticated &&
+    userStore.user?.role === "admin" &&
+    ["/", "/dashboard"].includes(to.path)
+  ) {
+    return next("/admin");
+  }
+
+  next();
 });
 
 export default router;

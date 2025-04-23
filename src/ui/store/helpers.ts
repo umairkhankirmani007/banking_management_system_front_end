@@ -82,10 +82,9 @@ export const api = axios.create({
   },
 });
 
-// 🔒 Add interceptor to attach token automatically
 api.interceptors.request.use(
   (config) => {
-    const userStore = useUserStore(); // get the store
+    const userStore = useUserStore();
     const token = userStore.token;
 
     if (token) {
@@ -131,6 +130,7 @@ export default {
 };
 
 export interface UserInterface {
+  _id: string;
   userId: string;
   email: string;
   firstName: string;
@@ -140,6 +140,7 @@ export interface UserInterface {
   age: number;
   balance: number;
   isVerified: boolean;
+  role: string;
 }
 
 //upload image user profile

@@ -7,133 +7,84 @@ import { useTransactionsStore } from "../store/TransactionsStore";
 // Store
 const transactionStore = useTransactionsStore();
 
-// Generate last 10 days' labels
-const labels = Array.from({ length: 10 }, (_, i) =>
-  dayjs()
-    .subtract(9 - i, "day")
-    .format("MMM D")
+// Compute the last 10 transactions safely
+const last10Transactions = computed(() => {
+  const data = Array.isArray(transactionStore.chartsData)
+    ? transactionStore.chartsData
+    : [];
+
+  return [...data]
+    .sort((a, b) => {
+      const dateTimeA = dayjs(`${a.date} ${a.time}`, "YYYY-MM-DD HH:mm A");
+      const dateTimeB = dayjs(`${b.date} ${b.time}`, "YYYY-MM-DD HH:mm A");
+      return dateTimeB.valueOf() - dateTimeA.valueOf(); // latest first
+    })
+    .slice(0, 10)
+    .reverse(); // oldest to newest
+});
+
+// Format data for Chart.js
+const chartData = computed(() => ({
+  labels: last10Transactions.value.map((t) =>
+    dayjs(`${t.date} ${t.time}`, "YYYY-MM-DD HH:mm A").format("HH:mm")
+  ),
+  datasets: [
+    {
+      label: "Transaction Amount",
+      data: last10Transactions.value.map((t) =>
+        t.credited ? t.amount : -t.amount
+      ),
+      borderColor: "#3b82f6", // Tailwind blue-500
+      backgroundColor: "rgba(59, 130, 246, 0.2)",
+      fill: true,
+    },
+  ],
+}));
+
+// Net total over the last 10 transactions
+const totalLast10Days = computed(() =>
+  last10Transactions.value.reduce((sum, t) => {
+    return sum + (t.credited ? t.amount : -t.amount);
+  }, 0)
 );
 
-// Computed: filter tableData for last 10 days and calculate totals
-const totalLast10Days = computed(() => {
-  // Initialize totals with default values
-  let totalCredited = 0;
-  let totalDebited = 0;
-
-  // Return default values if no tableData is available
-  if (!transactionStore.tableData || transactionStore.tableData.length === 0) {
-    return {
-      credited: 0,
-      debited: 0,
-      net: 0,
-    };
-  }
-
-  const last10DaysData = transactionStore.tableData.filter((txn) => {
-    return labels.includes(dayjs(txn.date).format("MMM D"));
-  });
-
-  last10DaysData.forEach((txn) => {
-    if (txn.status === "CREDITED") {
-      totalCredited += txn.amount;
-    } else if (txn.status === "DEBITED") {
-      totalDebited += txn.amount;
-    }
-  });
-
-  return {
-    credited: totalCredited,
-    debited: totalDebited,
-    net: totalCredited - totalDebited,
-  };
-});
-
-// Computed: chart data for the last 10 days
-const chartData = computed(() => {
-  // Initialize the payment array with 0s
-  const payments = Array(10).fill(0);
-
-  // Filter data for the last 10 days and populate the payment data
-  transactionStore.tableData.forEach((txn) => {
-    const txnDate = dayjs(txn.date).format("MMM D");
-    const dayIndex = labels.indexOf(txnDate);
-
-    if (dayIndex !== -1) {
-      if (txn.status === "CREDITED") {
-        payments[dayIndex] += txn.amount;
-      } else if (txn.status === "DEBITED") {
-        payments[dayIndex] -= txn.amount;
-      }
-    }
-  });
-
-  return {
-    labels,
-    datasets: [
-      {
-        label: "Net Payments",
-        data: payments,
-        borderColor: "#3b82f6",
-        backgroundColor: "rgba(59, 130, 246, 0.3)",
-        fill: true,
-        tension: 0.5,
-      },
-    ],
-  };
-});
-
+// Chart config
 const chartOptions = {
   responsive: true,
   elements: {
-    line: {
-      tension: 0.2, // smoother curve
-      borderWidth: 2,
-    },
-    point: {
-      radius: 0,
-    },
+    line: { tension: 0.2, borderWidth: 2 },
+    point: { radius: 0 },
   },
   plugins: {
-    legend: {
-      display: false,
-    },
-    tooltip: {
-      enabled: true,
-    },
+    legend: { display: false },
+    tooltip: { enabled: true },
   },
   scales: {
-    x: {
-      display: false,
-      grid: {
-        display: false,
-      },
-    },
-    y: {
-      display: false,
-      grid: {
-        display: false,
-      },
-    },
+    x: { display: false, grid: { display: false } },
+    y: { display: false, grid: { display: false } },
   },
 };
 </script>
 
 <template>
-  <div class="relative rounded-lg h-64">
-    <h3 class="px-2 text-sm font-semibold text-midDark">Last 10 Days</h3>
-    <!-- Display the net amount in h2 with a fallback value -->
-    <h2 class="px-1 text-4xl font-bold text-midDark">
-      {{
-        totalLast10Days.net !== undefined
-          ? (totalLast10Days.net >= 0 ? "+" : "") + totalLast10Days.net
-          : "0"
-      }}
-      £
-    </h2>
-    <Line
-      class="absolute bottom-0 rounded-lg"
-      :data="chartData"
-      :options="chartOptions"
-    />
+  <div class="relative rounded-lg h-64 bg-white shadow-md p-4">
+    <h3 class="text-sm font-semibold text-gray-600 mb-1">
+      Last 10 Transactions
+    </h3>
+
+    <div v-if="transactionStore.isLoading" class="text-gray-400 text-lg">
+      Loading...
+    </div>
+
+    <template v-else>
+      <h2 class="text-4xl font-bold text-gray-800 mb-4">
+        {{ totalLast10Days >= 0 ? "+" : "" }}{{ totalLast10Days }} £
+      </h2>
+      <Line
+        class="absolute bottom-0 left-0 right-0 h-32"
+        :data="chartData"
+        :options="chartOptions"
+      />
+    </template>
   </div>
 </template>

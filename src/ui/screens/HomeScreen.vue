@@ -13,19 +13,29 @@ import { addnewPyeeModal, sendMoneyModal, topUpModal } from "../store/Scopes";
 import { onMounted } from "vue";
 import { useTransactionsStore } from "../store/TransactionsStore";
 import Loading from "../components/Loading.vue";
+import { usePayeeStore } from "../store/PayeesStore";
+import { useUserStore } from "../store/userInfo";
 
 const columns = [
-  { key: "userName", label: "User" },
-  { key: "amount", label: "Amount" },
-  { key: "status", label: "Transaction Type" }, // assuming 'status' shows Credit/Debit
-  { key: "date", label: "Date" },
-  { key: "time", label: "Time" },
-  { key: "tid", label: "TID" },
-];
+  { key: "sender", label: "Sent By" },
+  { key: "receivedBy", label: "Sent To" },
 
+  { key: "amount", label: "Amount" },
+  { key: "message", label: "Type" },
+  { key: "status", label: "Status" },
+  { key: "date", label: "Date" },
+  // { key: "time", label: "Time" },
+];
 const transactionStore = useTransactionsStore();
-onMounted(() => {
-  transactionStore.GetTransactionsHistory();
+const payeeStore = usePayeeStore();
+const userSession = useUserStore();
+
+onMounted(async () => {
+  await Promise.all([
+    payeeStore.getAllUsers(),
+    transactionStore.GetAllUsersTransactions(),
+    transactionStore.getCreditHistory(),
+  ]);
 });
 </script>
 
@@ -53,16 +63,15 @@ onMounted(() => {
       <Table
         v-if="!transactionStore.isLoading"
         :columns="columns"
-        :rows="transactionStore.tableData"
+        :rows="transactionStore.currentUserAllTransaction"
         :rowsPerPage="7"
+        :loggedUserId="userSession.user?.userId"
       />
       <Loading v-else />
     </section>
 
     <!-- Bottom Right Small Box -->
-    <section
-      class="md:col-span-2 bg-gradient-to-r from-40% from-[#60B5FF60] to-blue-400 p-4 shadow rounded-xl"
-    >
+    <section class="md:col-span-2 bg-white p-4 shadow rounded-xl">
       <h2 class="text-xl font-semibold mb-4">Actions</h2>
       <QuickActionWidgets
         @openPymentModal="sendMoneyModal = true"
@@ -82,6 +91,10 @@ onMounted(() => {
       <!-- <Payees /> -->
       <PayeeCard />
     </section>
+    <!-- <section class="md:col-span-4 bg-white p-4 shadow rounded-xl">
+      <h2 class="text-xl font-semibold mb-4">Payees</h2>
+      <TreeChart />
+    </section> -->
     <SendPaymentModal v-if="sendMoneyModal" @close="sendMoneyModal = false" />
     <NewPayeeModal v-if="addnewPyeeModal" @close="addnewPyeeModal = false" />
     <TopUpModal v-if="topUpModal" @close="topUpModal = false" />

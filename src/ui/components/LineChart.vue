@@ -7,45 +7,38 @@ import { useTransactionsStore } from "../store/TransactionsStore";
 // Store
 const transactionStore = useTransactionsStore();
 
-// Labels: Last 10 days
-const labels = Array.from({ length: 10 }, (_, i) =>
-  dayjs()
-    .subtract(9 - i, "day")
-    .format("MMM D")
-);
+console.log(transactionStore.chartsData);
+const chartData = computed(() => {
+  const dates = Array.from({ length: 10 }, (_, i) =>
+    dayjs().subtract(i, "day").format("YYYY-MM-DD")
+  ).reverse();
 
-const dailyNetAmounts = computed(() => {
-  return Array.from({ length: 10 }, (_, i) => {
-    const targetDate = dayjs()
-      .subtract(9 - i, "day")
-      .format("YYYY-MM-DD");
+  const dailyData = dates.map((date) => {
+    const dailyTransactions = transactionStore.chartsData.filter(
+      (t) => t.date === date
+    );
 
-    let credited = 0;
-    let debited = 0;
+    const netAmount = dailyTransactions.reduce((sum, transaction) => {
+      return transaction.credited
+        ? sum + transaction.amount
+        : sum - transaction.amount;
+    }, 0);
 
-    transactionStore.tableData.forEach((txn) => {
-      if (txn.date === targetDate) {
-        if (txn.status === "CREDITED") credited += txn.amount;
-        else if (txn.status === "DEBITED") debited += txn.amount;
-      }
-    });
-
-    return credited - debited;
+    return { date, netAmount };
   });
-});
 
-const chartData = computed(() => ({
-  labels,
-  datasets: [
-    {
-      label: "Net Payments",
-      data: dailyNetAmounts.value,
-      backgroundColor: "#3b82f6",
-      borderRadius: 6,
-      barThickness: 20,
-    },
-  ],
-}));
+  return {
+    labels: dailyData.map((d) => dayjs(d.date).format("MMM D")),
+    datasets: [
+      {
+        label: "Net Amount",
+        data: dailyData.map((d) => d.netAmount),
+        backgroundColor: "#4f46e5",
+        borderWidth: 0,
+      },
+    ],
+  };
+});
 
 const chartOptions = {
   responsive: true,
@@ -57,6 +50,13 @@ const chartOptions = {
       callbacks: {
         label: (context: any) => `$${context.parsed.y.toLocaleString("en-US")}`,
       },
+    },
+  },
+  elements: {
+    bar: {
+      borderRadius: 3,
+      borderSkipped: false,
+      backgroundColor: "rgba(79, 70, 229, 0.6)", // Indigo with transparency
     },
   },
   scales: {

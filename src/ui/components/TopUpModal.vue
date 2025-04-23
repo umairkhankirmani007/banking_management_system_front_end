@@ -6,6 +6,7 @@ import { notify } from "../store/helpers";
 import CInput from "./CInput.vue";
 import TransitionComponent from "./TransitionComponent.vue";
 import { usePayeeStore } from "../store/PayeesStore";
+import Loading from "./Loading.vue";
 
 const emit = defineEmits(["close"]);
 const emitClose = () => emit("close");
@@ -82,7 +83,7 @@ const stepBack = () => {
           </section>
         </template>
         <template #step1>
-          <section class="w-full space-y-5">
+          <section v-if="!payeeStore.isLoading" class="w-full space-y-5">
             <h3 class="text-xl font-semibold">You are About to Topup</h3>
             <h3 class="text-xl font-semibold">RS : {{ topUpAmount }}</h3>
             <button
@@ -92,6 +93,7 @@ const stepBack = () => {
               Confirm
             </button>
           </section>
+          <Loading v-else />
         </template>
       </TransitionComponent>
     </div>

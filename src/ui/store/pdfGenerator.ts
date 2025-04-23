@@ -7,43 +7,47 @@ export const generatePDF = () => {
   const doc = new jsPDF();
   const transactionStore = useTransactionsStore();
 
-  const tableData = transactionStore.tableData;
-  const userName = tableData[0]?.userName || "N/A";
+  const creditHistory = Array.isArray(transactionStore.creditHistory)
+    ? transactionStore.creditHistory
+    : [];
 
-  if (!tableData.length) {
+  if (!creditHistory.length) {
     alert("No transactions available.");
     return;
   }
 
-  // Get earliest and latest dates
-  const sortedByDate = [...tableData].sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  // Sort by createdAt for date range
+  const sorted = [...creditHistory].sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
   );
-  const startDate = dayjs(sortedByDate[0].date).format("YYYY-MM-DD");
-  const endDate = dayjs(sortedByDate[sortedByDate.length - 1].date).format(
+
+  const startDate = dayjs(sorted[0].createdAt).format("YYYY-MM-DD");
+  const endDate = dayjs(sorted[sorted.length - 1].createdAt).format(
     "YYYY-MM-DD"
   );
 
-  // Header Information
+  const userName = "User ID: " + (creditHistory[0]?.userId || "N/A");
+
+  // Header Info
   doc.setFontSize(12);
-  doc.text("Bank Statement", 14, 15);
+  doc.text("Credit History Report", 14, 15);
   doc.setFontSize(10);
-  doc.text(`Name: ${userName}`, 14, 22);
+  doc.text(`${userName}`, 14, 22);
   doc.text(`Statement Period: ${startDate} to ${endDate}`, 14, 28);
 
-  // Table Headers
-  const headers = [["Date", "Time", "Amount", "Type", "TID"]];
+  // Table Headings
+  const headers = [["Date", "Time", "Amount", "Status", "Transaction ID"]];
 
-  // Table Rows
-  const rows = tableData.map((txn) => [
-    dayjs(txn.date).format("YYYY-MM-DD"),
-    dayjs(txn.date).format("HH:mm"),
+  // Table Body Rows
+  const rows = creditHistory.map((txn) => [
+    dayjs(txn.createdAt).format("YYYY-MM-DD"),
+    dayjs(txn.createdAt).format("HH:mm"),
     `${txn.amount} £`,
     txn.status,
-    txn.tid.slice(0, 8) + "...", // Short TID
+    txn._id.slice(0, 8) + "…",
   ]);
 
-  // Transaction Table
+  // Table
   autoTable(doc, {
     startY: 35,
     head: headers,
@@ -53,14 +57,14 @@ export const generatePDF = () => {
       cellPadding: 3,
     },
     headStyles: {
-      fillColor: [30, 64, 175], // Tailwind deep blue
+      fillColor: [30, 64, 175],
       textColor: 255,
     },
     alternateRowStyles: { fillColor: [245, 245, 245] },
     margin: { left: 14, right: 14 },
   });
 
-  // Signature Area
+  // Footer
   const pageHeight = doc.internal.pageSize.height;
   doc.setFontSize(10);
   doc.text("Signature: ____________________", 14, pageHeight - 20);
@@ -71,5 +75,5 @@ export const generatePDF = () => {
   );
 
   // Save PDF
-  doc.save(`Bank_Statement_${userName}_${endDate}.pdf`);
+  doc.save(`Credit_History_${endDate}.pdf`);
 };

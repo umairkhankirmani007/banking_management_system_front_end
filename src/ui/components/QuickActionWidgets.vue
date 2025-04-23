@@ -27,17 +27,17 @@ const quickActions = ref([
     color: "#DCA06D60",
   },
   {
-    id: "3",
-    title: "Support",
-    value: "support",
-    icon: "mdi:customer-service",
-    color: "#88304E60",
-  },
-  {
     id: "5",
     title: "Top Up",
     value: "topup",
     icon: "mdi:attach-money",
+    color: "#FFF08570",
+  },
+  {
+    id: "3",
+    title: "Support",
+    value: "support",
+    icon: "mdi:customer-service",
     color: "#88304E60",
   },
 ]);
@@ -97,6 +97,7 @@ const handleActionClick = (value: string) => {
     <div
       v-for="item in quickActions"
       :key="item.id"
+      :style="{ backgroundColor: item.color }"
       @click="handleActionClick(item.value)"
       class="p-2 cursor-pointer text-midDark bg-white hover:bg-accent hover:scale-105 duration-100 shadow-md font-semibold w-[210px] h-15 flex items-center rounded-full justify-center gap-3"
     >
