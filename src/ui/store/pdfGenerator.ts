@@ -2,11 +2,12 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import dayjs from "dayjs";
 import { useTransactionsStore } from "../store/TransactionsStore";
+import { useUserStore } from "./userInfo";
 
 export const generatePDF = () => {
   const doc = new jsPDF();
   const transactionStore = useTransactionsStore();
-
+  const userSession = useUserStore();
   const creditHistory = Array.isArray(transactionStore.creditHistory)
     ? transactionStore.creditHistory
     : [];
@@ -26,14 +27,19 @@ export const generatePDF = () => {
     "YYYY-MM-DD"
   );
 
-  const userName = "User ID: " + (creditHistory[0]?.userId || "N/A");
+  const userName = "Account Number: " + (creditHistory[0]?.userId || "N/A");
 
   // Header Info
   doc.setFontSize(12);
   doc.text("Credit History Report", 14, 15);
   doc.setFontSize(10);
-  doc.text(`${userName}`, 14, 22);
-  doc.text(`Statement Period: ${startDate} to ${endDate}`, 14, 28);
+  doc.text(
+    `${userSession.user?.firstName + "" + userSession.user?.lastName}`,
+    14,
+    22
+  );
+  doc.text(`${userName}`, 14, 28);
+  doc.text(`Statement Period: ${startDate} to ${endDate}`, 14, 34);
 
   // Table Headings
   const headers = [["Date", "Time", "Amount", "Status", "Transaction ID"]];
@@ -49,7 +55,7 @@ export const generatePDF = () => {
 
   // Table
   autoTable(doc, {
-    startY: 35,
+    startY: 40,
     head: headers,
     body: rows,
     styles: {

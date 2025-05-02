@@ -64,7 +64,7 @@ onMounted(async () => {
         v-if="!transactionStore.isLoading"
         :columns="columns"
         :rows="transactionStore.currentUserAllTransaction"
-        :rowsPerPage="7"
+        :rowsPerPage="5"
         :loggedUserId="userSession.user?.userId"
       />
       <Loading v-else />

@@ -35,6 +35,7 @@ const chartData = computed(() => {
         data: dailyData.map((d) => d.netAmount),
         backgroundColor: "#4f46e5",
         borderWidth: 0,
+        barThickness: 40,
       },
     ],
   };
@@ -54,9 +55,9 @@ const chartOptions = {
   },
   elements: {
     bar: {
-      borderRadius: 3,
+      borderRadius: 6,
       borderSkipped: false,
-      backgroundColor: "rgba(79, 70, 229, 0.6)", // Indigo with transparency
+      backgroundColor: "#ccc",
     },
   },
   scales: {
@@ -67,7 +68,7 @@ const chartOptions = {
       beginAtZero: true,
       grid: { display: false },
       title: {
-        display: true,
+        display: false,
         text: "Net Amount",
       },
     },
@@ -76,7 +77,7 @@ const chartOptions = {
 </script>
 
 <template>
-  <div>
+  <div class="h-full">
     <Bar :data="chartData" :options="chartOptions" />
   </div>
 </template>

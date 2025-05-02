@@ -11,7 +11,7 @@ const props = defineProps<{
 }>();
 
 const currentPage = ref(1);
-const perPage = ref(props.rowsPerPage || 5);
+const perPage = ref(props.rowsPerPage || 4);
 
 const totalPages = computed(() => Math.ceil(props.rows.length / perPage.value));
 
@@ -32,19 +32,17 @@ function getTransactionType(
   receiverID: string,
   message: string
 ): string {
-  // Explicitly check for Top-Up first
   if (message.toLowerCase().includes("top-up")) {
     return "Top-Up";
   }
 
-  // Now check debit/credit
   if (senderID === props.loggedUserId) {
     return "Debited";
   } else if (receiverID === props.loggedUserId) {
     return "Credited";
   }
 
-  return "Other"; // Fallback
+  return "Other";
 }
 
 console.log(props.rows);
@@ -84,7 +82,7 @@ console.log(props.rows);
                 <img
                   :src="row.senderImage || staticData.userImage"
                   alt="Sender"
-                  class="w-8 h-8 rounded-full object-cover"
+                  class="w-8 h-8 rounded-full object-cover object-top"
                 />
                 <span>{{ row.sender }}</span>
               </div>
@@ -95,7 +93,7 @@ console.log(props.rows);
                 <img
                   :src="row.receiverImage || staticData.userImage"
                   alt="Recipient"
-                  class="w-8 h-8 rounded-full object-cover"
+                  class="w-8 h-8 rounded-full object-cover object-top"
                 />
                 <span>{{ row.receivedBy }}</span>
               </div>
@@ -120,7 +118,7 @@ console.log(props.rows);
             </template>
 
             <template v-else>
-              <!-- {{ row[col.key] }} -->
+              {{ row[col.key as keyof SimplifiedTransaction] }}
             </template>
           </td>
         </tr>
