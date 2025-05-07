@@ -203,7 +203,7 @@ const filterQueries = computed(() =>
       <div
         class="sticky top-0 shadow rounded-xl bg-white p-4 flex items-center gap-4 justify-between text-lg font-semibold"
       >
-        Cutomer Queries
+        Customer Queries
         <input
           type="text"
           v-model="supportSearch"

@@ -32,6 +32,7 @@ export function validateForm(
   rules: ValidationRules
 ): { valid: boolean; errors: Record<string, string> } {
   const errors: Record<string, string> = {};
+  const allowedDomains = ["gmail.com", "yahoo.com", "yopmail.com"];
 
   for (const field in rules) {
     const value = data[field];
@@ -45,6 +46,12 @@ export function validateForm(
     if (rule.type === "email") {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (value && !emailRegex.test(value)) {
+        errors[field] = rule.message || `${field} must be a valid email`;
+        continue;
+      }
+
+      const domain = value.split("@")[1]?.toLowerCase();
+      if (domain && !allowedDomains.includes(domain)) {
         errors[field] = rule.message || `${field} must be a valid email`;
       }
     }

@@ -5,6 +5,7 @@ import Tabs from "../components/Tabs.vue";
 
 import Loading from "../components/Loading.vue";
 import { useAuthStore } from "../store/AuthStore";
+import PhoneInput from "../components/PhoneInput.vue";
 
 const authStore = useAuthStore();
 </script>
@@ -87,14 +88,16 @@ const authStore = useAuthStore();
             icon="mdi:email"
             width="w-full"
           />
-          <CInput
+          <!-- <CInput
             type="number"
             v-model="authStore.signupForm.phoneNumber"
             placeholder="Phone Number"
             icon="mdi:phone"
             width="w-full"
             required
-          />
+          /> -->
+
+          <PhoneInput v-model="authStore.signupForm.phoneNumber" />
           <CInput
             type="number"
             v-model="authStore.signupForm.age"

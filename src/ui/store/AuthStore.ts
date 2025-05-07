@@ -43,7 +43,7 @@ export const useAuthStore = defineStore("authStore", () => {
       phoneNumber: { required: true },
       age: { required: true, type: "number" },
     };
-
+    console.log(signupForm.value, "===>");
     const { valid, errors } = validateForm(data, validationRules);
 
     if (!valid) {
