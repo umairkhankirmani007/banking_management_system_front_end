@@ -45,58 +45,62 @@ const handleSFormSubmit = async () => {
   }
 };
 </script>
-
 <template>
   <main class="flex items-center justify-center h-screen">
-    <BackButton />
+    <!-- <BackButton /> -->
     <form
       @submit.prevent="handleSFormSubmit"
-      class="bg-white shadow-xl p-10 w-1/3 rounded-xl space-y-5"
+      class="bg-primary shadow-xl p-10 w-1/3 rounded-xl space-y-5"
     >
-      <h2 class="text-2xl font-bold text-center">Support Form</h2>
-      <p class="text-gray-600 text-center">
-        Please provide your contact email, a short subject, and a detailed
-        message so our team can assist you better.
-      </p>
+      <fieldset class="space-y-5 border border-white/30 rounded-md p-4">
+        <legend class="text-lg font-bold px-2 text-white">Support Form</legend>
 
-      <div>
-        <label class="block mb-1 font-semibold">Email Address</label>
-        <CInput
-          type="email"
-          v-model="formData.email"
-          placeholder="e.g. yourname@example.com"
-          icon="mdi:email"
-          width="w-full"
-        />
-      </div>
+        <h2 class="text-white text-center">
+          Please provide your contact email, a short subject, and a detailed
+          message so our team can assist you better.
+        </h2>
 
-      <div>
-        <label class="block mb-1 font-semibold">Subject</label>
-        <CInput
-          type="text"
-          v-model="formData.subject"
-          placeholder="Brief Subject"
-          icon="mdi:card-text"
-          width="w-full"
-        />
-      </div>
+        <div>
+          <label class="block mb-1 text-accent font-semibold"
+            >Email Address</label
+          >
+          <CInput
+            type="email"
+            v-model="formData.email"
+            placeholder="e.g. yourname@example.com"
+            icon="mdi:email"
+            width="w-full"
+          />
+        </div>
 
-      <div>
-        <label class="block mb-1 font-semibold">Message</label>
-        <textarea
-          v-model="formData.message"
-          class="h-40 w-full border border-gray-300 p-2 rounded-md resize-none"
-          placeholder="Describe your issue or question in detail..."
-        />
-      </div>
+        <div>
+          <label class="block mb-1 text-accent font-semibold">Subject</label>
+          <CInput
+            type="text"
+            v-model="formData.subject"
+            placeholder="Brief Subject"
+            icon="mdi:card-text"
+            width="w-full"
+          />
+        </div>
 
-      <button
-        :disabled="isLoading"
-        class="bg-accent font-semibold w-full h-10 text-white rounded-md hover:bg-indigo-300 transition"
-        type="submit"
-      >
-        {{ isLoading ? "Sending Query to CSR Team" : "Submit" }}
-      </button>
+        <div>
+          <label class="block mb-1 text-accent font-semibold">Message</label>
+          <textarea
+            v-model="formData.message"
+            class="h-40 w-full border border-gray-300 p-2 rounded-md text-accent resize-none"
+            placeholder="Describe your issue or question in detail..."
+          />
+        </div>
+
+        <button
+          :disabled="isLoading"
+          class="bg-blue font-semibold w-full h-10 text-white rounded-md hover:bg-midDark transition"
+          type="submit"
+        >
+          {{ isLoading ? "Sending Query to CSR Team" : "Submit" }}
+        </button>
+      </fieldset>
     </form>
   </main>
 </template>

@@ -39,7 +39,7 @@ function handleInput(e: Event) {
 </script>
 
 <template>
-  <div :class="['relative text-black', props.width]">
+  <div :class="['relative text-white', props.width]">
     <!-- Icon inside input -->
     <Icon
       v-if="props.icon"

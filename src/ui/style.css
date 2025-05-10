@@ -2,12 +2,13 @@
 @import "vue-select/dist/vue-select.css";
 
 @theme {
-  --color-dark: #210f37;
-  --color-midDark: #4f1c51;
-  --color-accent: #dca06d;
-  --color-text: #99bc85;
-  --color-primary: #f6f0f0;
-  --color-gray: #f7cfd8;
+  --color-dark: #210f37; /* Background */
+  --color-midDark: #4f1c51; /* Cards, containers */
+  --color-accent: #bcbcbc; /* Updated: neutral light gray for buttons/highlights */
+  --color-text: #99bc85; /* Main text (soft green) */
+  --color-primary: #1a1a1a;
+  --color-gray: #a1a1aa;
+  --color-blue: #6d49b7;
 }
 
 p {
@@ -22,19 +23,17 @@ h1 {
 
 span {
   font-size: 15px;
-  color: var(--color-midDark);
 }
 
 :root {
   background-color: var(--color-primary);
 }
 
-/* Hide scrollbars but allow scrolling */
 .no-scrollbar {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .no-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }

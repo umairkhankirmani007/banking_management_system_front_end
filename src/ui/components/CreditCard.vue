@@ -29,15 +29,15 @@ const copyAccountNumber = async () => {
   }
 };
 </script>
-
+masterCardLogo
 <template>
   <div
     v-if="user"
     @click="handleCardClick"
-    class="min-w-[450px] max-w-[450px] h-64 cursor-pointer bg-gradient-to-r from-blue-800 to-blue-500 p-5 rounded-md"
+    class="min-w-[450px] max-w-[450px] h-64 cursor-pointer bg-gradient-to-r from-blue via-70% to-midDark p-5 rounded-md"
   >
     <div class="flex justify-end">
-      <img :src="staticData.masterCardLogo" class="w-20" />
+      <img :src="staticData.visaLogo" class="w-16 mt[-10px]" />
     </div>
 
     <div class="mt-10 space-y-3">

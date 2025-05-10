@@ -12,9 +12,7 @@ const authStore = useAuthStore();
 
 <template>
   <main class="w-3/4 max-w-md mx-auto">
-    <h2 class="text-6xl text-accent text-center mb-10">
-      {{ authStore.currentTab === "login" ? "Login" : "Sign up" }}
-    </h2>
+    <h2 class="text-6xl text-accent text-center mb-10">Spend Wise</h2>
 
     <Tabs
       v-if="!authStore.isLoading"

@@ -8,11 +8,8 @@ const privateRoutes: RouteRecordRaw[] = [
     meta: {
       layout: "BaseLayout",
       requiresAuth: true,
+      icon: "mdi:view-dashboard",
     },
-  },
-  {
-    path: "/",
-    redirect: "/dashboard",
   },
   {
     path: "/profile",
@@ -21,8 +18,21 @@ const privateRoutes: RouteRecordRaw[] = [
     meta: {
       layout: "BaseLayout",
       requiresAuth: true,
+      icon: "mdi:account",
     },
   },
+
+  {
+    path: "/payees",
+    name: "Payees",
+    component: () => import("@/screens/PayeesScreen.vue"),
+    meta: {
+      layout: "BaseLayout",
+      requiresAuth: true,
+      icon: "mdi:users",
+    },
+  },
+
   {
     path: "/support",
     name: "Support",
@@ -30,6 +40,7 @@ const privateRoutes: RouteRecordRaw[] = [
     meta: {
       layout: "BaseLayout",
       requiresAuth: true,
+      icon: "mdi:lifebuoy",
     },
   },
 
@@ -40,6 +51,7 @@ const privateRoutes: RouteRecordRaw[] = [
     meta: {
       layout: "BaseLayout",
       requiresAuth: true,
+      icon: "mdi:shield-account",
     },
   },
 ];

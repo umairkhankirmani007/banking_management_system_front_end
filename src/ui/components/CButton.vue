@@ -27,7 +27,7 @@ const iconPos = props.iconPosition || "left";
 <template>
   <button
     :class="[
-      'flex items-center justify-center gap-2 text-white px-4 font-semibold cursor-pointer',
+      'flex items-center justify-center gap-2 text-white bg-dark px-4 font-semibold cursor-pointer',
       width,
       height,
       color,

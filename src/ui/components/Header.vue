@@ -16,7 +16,7 @@ const handleReload = () => {
 
 <template>
   <div class="flex items-center justify-between">
-    <h2 class="text-xl font-semibold">Dashboard</h2>
+    <h2 class="text-xl font-semibold">Spend Wise</h2>
     <div class="flex items-center gap-3">
       <button
         @click="userStore.logout"

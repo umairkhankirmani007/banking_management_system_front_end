@@ -51,7 +51,9 @@ console.log(props.rows);
 <template>
   <div class="w-full overflow-x-auto">
     <table class="min-w-full text-left border border-gray-300 rounded-md">
-      <thead class="bg-gray-100 text-sm uppercase">
+      <thead
+        class="bg-gradient-to-r from-blue to-midDark text-sm text-white uppercase"
+      >
         <tr>
           <th
             v-for="col in columns"
@@ -66,7 +68,7 @@ console.log(props.rows);
         <tr
           v-for="(row, index) in paginatedRows"
           :key="index"
-          class="hover:bg-gray-50"
+          class="hover:bg-gray-600"
         >
           <td
             v-for="col in columns"
@@ -126,7 +128,7 @@ console.log(props.rows);
         <tr v-if="!rows.length">
           <td
             :colspan="columns.length"
-            class="text-center h-52 py-4 text-gray-500"
+            class="text-center h-52 py-4 text-white"
           >
             <h2>No Record Found</h2>
           </td>
@@ -135,18 +137,18 @@ console.log(props.rows);
     </table>
 
     <!-- Pagination -->
-    <div class="flex justify-between items-center mt-4 text-sm text-gray-700">
-      <p>Page {{ currentPage }} of {{ totalPages }}</p>
+    <div class="flex justify-between items-center mt-4 text-sm text-white">
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
       <div class="flex items-center gap-2">
         <button
-          class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+          class="px-3 py-1 bg-gray rounded hover:bg-gray-600"
           :disabled="currentPage === 1"
           @click="currentPage--"
         >
           Prev
         </button>
         <button
-          class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+          class="px-3 py-1 bg-gray rounded hover:bg-gray-600"
           :disabled="currentPage === totalPages"
           @click="currentPage++"
         >

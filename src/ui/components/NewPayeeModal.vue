@@ -78,11 +78,11 @@ const stepBack = () => {
         <button
           v-if="currentStep > 0"
           @click="stepBack"
-          class="text-3xl hover:bg-indigo-300 duration-150 cursor-pointer bg-accent rounded-full text-white"
+          class="text-3xl hover:bg-midDark duration-150 cursor-pointer bg-blue rounded-full text-white"
         >
           <Icon icon="mdi:keyboard-arrow-left" />
         </button>
-        <h2 class="text-xl font-semibold">Add New Payee</h2>
+        <h2 class="text-xl text-accent font-semibold">Add New Payee</h2>
       </section>
 
       <section class="w-full">
@@ -92,7 +92,9 @@ const stepBack = () => {
       <TransitionComponent mode="out-in" transition="slide" :step="currentStep">
         <template #step0>
           <section class="w-full space-y-5">
-            <h2 class="text-xl font-semibold">Enter Account Number</h2>
+            <h2 class="text-xl text-accent font-semibold">
+              Enter Account Number
+            </h2>
             <CInput
               v-model="accountNumber"
               placeholder="Account Number"
@@ -103,7 +105,7 @@ const stepBack = () => {
             />
             <button
               @click="searchPayee"
-              class="w-full h-10 rounded-md bg-accent text-white hover:bg-indigo-300 duration-200 cursor-pointer font-bold"
+              class="w-full h-10 rounded-md bg-blue text-white hover:bg-midDark duration-200 cursor-pointer font-bold"
             >
               Next
             </button>
@@ -120,7 +122,9 @@ const stepBack = () => {
               </div>
               <div class="flex justify-between w-full">
                 <h3 class="text-xl font-semibold">User Name :</h3>
-                <h3 class="text-xl font-semibold">{{ newPayee?.userName }}</h3>
+                <h3 class="text-xl font-semibold capitalize">
+                  {{ newPayee?.userName }}
+                </h3>
               </div>
               <div class="flex justify-between w-full">
                 <h3 class="text-xl font-semibold">Account Number :</h3>
@@ -128,7 +132,7 @@ const stepBack = () => {
               </div>
               <button
                 @click="payeeStore.addnewPayee(accountNumber)"
-                class="w-full h-10 rounded-md bg-accent text-white hover:bg-indigo-300 duration-200 cursor-pointer font-bold"
+                class="w-full h-10 rounded-md bg-blue text-white hover:bg-midDark duration-200 cursor-pointer font-bold"
               >
                 Confirm
               </button>

@@ -42,7 +42,7 @@ watch(
 <template>
   <div>
     <div
-      class="flex items-center border border-gray-300 rounded-md overflow-hidden"
+      class="flex items-center border border-gray-300 rounded-md text-white overflow-hidden"
     >
       <select
         v-model="selectedCountry"
@@ -57,7 +57,7 @@ watch(
         type="tel"
         pattern="[0-9]*"
         placeholder="Enter phone number"
-        class="flex-1 px-3 py-2 text-sm focus:outline-none h-12 border-none"
+        class="flex-1 px-3 py-2 text-sm focus:outline-none h-12 border-none text-white"
       />
     </div>
   </div>

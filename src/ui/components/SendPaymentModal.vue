@@ -106,11 +106,11 @@ const handleSendPayment = () => {
         <button
           v-if="paymentOptions.currentStep > 0"
           @click="stepBack"
-          class="text-3xl hover:bg-indigo-300 duration-150 cursor-pointer bg-accent rounded-full text-white"
+          class="text-3xl hover:bg-midDark duration-150 cursor-pointer bg-blue rounded-full text-white"
         >
           <Icon icon="mdi:keyboard-arrow-left" />
         </button>
-        <h2 class="text-xl font-semibold">Send Payment</h2>
+        <h2 class="text-xl font-semibold text-accent">Send Payment</h2>
       </section>
 
       <section class="w-full">
@@ -134,7 +134,7 @@ const handleSendPayment = () => {
             />
           </section>
 
-          <section class="w-full space-y-5">
+          <section class="w-full text-accent space-y-5">
             <h2 class="font-semibold">
               {{
                 paymentOptions.currentTab === "existing"
@@ -149,7 +149,7 @@ const handleSendPayment = () => {
               :options="payeeStore.userPayeesList"
               :reduce="(user: Payee) => user._id"
               label="userName"
-              class="w-full"
+              class="w-full text-accent focus:text-accent"
               placeholder="Search..."
             />
 
@@ -165,7 +165,7 @@ const handleSendPayment = () => {
 
             <button
               @click="onUserSelection"
-              class="w-full h-10 mt-10 rounded-md bg-accent text-white hover:bg-indigo-300 duration-200 cursor-pointer font-bold"
+              class="w-full h-10 mt-10 rounded-md bg-blue text-white hover:bg-midDark duration-200 cursor-pointer font-bold"
             >
               Next
             </button>
@@ -176,7 +176,7 @@ const handleSendPayment = () => {
         <template #step1>
           <section class="w-full mt-5 flex items-center flex-col">
             <div
-              class="flex items-center flex-col gap-1 w-fit p-2 text-midDark rounded-lg font-semibold"
+              class="flex items-center text-accent flex-col gap-1 w-fit p-2 rounded-lg font-semibold"
             >
               Available balance
               <h3 class="text-2xl">£ {{ userStore.user?.balance }}</h3>
@@ -192,7 +192,7 @@ const handleSendPayment = () => {
               />
               <button
                 @click="onUserSelection"
-                class="w-full h-10 rounded-md bg-accent text-white hover:bg-indigo-300 duration-200 cursor-pointer font-bold"
+                class="w-full h-10 rounded-md bg-blue text-white hover:bg-midDark duration-200 cursor-pointer font-bold"
               >
                 Next
               </button>
@@ -207,7 +207,7 @@ const handleSendPayment = () => {
             class="w-full mt-10 space-y-5"
           >
             <div
-              class="w-full rounded-lg space-y-3 shadow-sm bg-gray p-3 px-10"
+              class="w-full rounded-lg space-y-3 shadow-sm bg-accent p-3 px-10"
             >
               <div class="flex items-center justify-center">
                 <img
@@ -230,12 +230,12 @@ const handleSendPayment = () => {
             </div>
             <textarea
               v-model="paymentOptions.message"
-              class="border border-gray p-2 rounded-lg h-20 w-full"
+              class="border border-gray p-2 text-accent rounded-lg h-20 w-full"
               placeholder="Message..."
             />
             <button
               @click="handleSendPayment"
-              class="w-full h-10 rounded-md bg-accent text-white hover:bg-indigo-300 duration-200 cursor-pointer font-bold"
+              class="w-full h-10 rounded-md bg-blue text-white hover:bg-midDark duration-200 cursor-pointer font-bold"
             >
               Confirm
             </button>

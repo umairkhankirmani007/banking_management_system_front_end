@@ -22,7 +22,7 @@ console.log(authStore.isError);
 </script>
 
 <template>
-  <section>
+  <section class="flex justify-center items-center">
     <!-- Loading Spinner -->
     <Loading v-if="authStore.isLoading" />
 
@@ -32,8 +32,10 @@ console.log(authStore.isError);
       @submit.prevent="authStore.verifyOTP(authStore.otp)"
       class="flex flex-col gap-5"
     >
-      <h2 class="text-4xl text-accent text-center">Enter OTP</h2>
-      <span>Otp has been sent to your registered email address</span>
+      <h2 class="text-4xl text-white text-center">Enter OTP</h2>
+      <span class="text-white"
+        >Otp has been sent to your registered email address</span
+      >
       <CInput
         placeholder="Enter OTP"
         type="number"

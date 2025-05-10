@@ -47,11 +47,11 @@ const stepBack = () => {
     <div
       class="bg-primary overflow-hidden flex flex-col items-center justify-center gap-8 rounded-xl p-6 w-1/3 shadow-lg"
     >
-      <section class="w-full flex items-center gap-3">
+      <section class="w-full flex text-accent items-center gap-3">
         <button
           v-if="currentStep > 0"
           @click="stepBack"
-          class="text-3xl hover:bg-indigo-300 duration-150 cursor-pointer bg-accent rounded-full text-white"
+          class="text-3xl hover:bg-midDark duration-150 cursor-pointer bg-blue rounded-full text-white"
         >
           <Icon icon="mdi:keyboard-arrow-left" />
         </button>
@@ -64,7 +64,7 @@ const stepBack = () => {
 
       <TransitionComponent mode="out-in" transition="slide" :step="currentStep">
         <template #step0>
-          <section class="w-full space-y-5">
+          <section class="w-full text-accent space-y-5">
             <h2 class="text-xl font-semibold">Enter Amount</h2>
             <CInput
               v-model="topUpAmount"
@@ -76,19 +76,22 @@ const stepBack = () => {
             />
             <button
               @click="handleTopUp"
-              class="w-full h-10 rounded-md bg-accent text-white hover:bg-indigo-300 duration-200 cursor-pointer font-bold"
+              class="w-full h-10 rounded-md bg-blue text-white hover:bg-indigo-300 duration-200 cursor-pointer font-bold"
             >
               Next
             </button>
           </section>
         </template>
         <template #step1>
-          <section v-if="!payeeStore.isLoading" class="w-full space-y-5">
+          <section
+            v-if="!payeeStore.isLoading"
+            class="w-full text-accent space-y-5"
+          >
             <h3 class="text-xl font-semibold">You are About to Topup</h3>
             <h3 class="text-xl font-semibold">RS : {{ topUpAmount }}</h3>
             <button
               @click="payeeStore.topupAmount(topUpAmount)"
-              class="w-full h-10 rounded-md bg-accent text-white hover:bg-indigo-300 duration-200 cursor-pointer font-bold"
+              class="w-full h-10 rounded-md bg-blue text-white hover:bg-midDark duration-200 cursor-pointer font-bold"
             >
               Confirm
             </button>

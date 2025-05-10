@@ -7,7 +7,7 @@ import { generatePDF } from "../store/pdfGenerator";
 const quickActions = ref([
   {
     id: "1",
-    title: "Send Money",
+    title: "Send Payment",
     value: "sendMoney",
     icon: "mdi:paper-airplane-outline",
     color: "#C68EFD60",
@@ -33,13 +33,13 @@ const quickActions = ref([
     icon: "mdi:attach-money",
     color: "#FFF08570",
   },
-  {
-    id: "3",
-    title: "Support",
-    value: "support",
-    icon: "mdi:customer-service",
-    color: "#88304E60",
-  },
+  // {
+  //   id: "3",
+  //   title: "Support",
+  //   value: "support",
+  //   icon: "mdi:customer-service",
+  //   color: "#88304E60",
+  // },
 ]);
 
 const emit = defineEmits([
@@ -91,15 +91,12 @@ const handleActionClick = (value: string) => {
 </script>
 
 <template>
-  <section
-    class="flex gap-2 items-center justify-between flex-wrap lg:flex-nowrap"
-  >
+  <section class="flex gap-2 items-center w-[450px] justify-between flex-wrap">
     <div
       v-for="item in quickActions"
       :key="item.id"
-      :style="{ backgroundColor: item.color }"
       @click="handleActionClick(item.value)"
-      class="p-2 cursor-pointer text-midDark bg-white hover:bg-accent hover:scale-105 duration-100 shadow-md font-semibold w-[210px] h-15 flex items-center rounded-full justify-center gap-3"
+      class="p-2 cursor-pointer text-white bg-gradient-to-r from-blue to-midDark h-30 hover:bg-midDark hover:scale-105 duration-100 shadow-md font-semibold w-[210px] flex items-center rounded-lg justify-center gap-3"
     >
       <Icon class="text-4xl" :icon="item.icon" />
       <h2>{{ item.title }}</h2>

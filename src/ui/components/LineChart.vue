@@ -9,31 +9,19 @@ const transactionStore = useTransactionsStore();
 
 console.log(transactionStore.chartsData);
 const chartData = computed(() => {
-  const dates = Array.from({ length: 10 }, (_, i) =>
-    dayjs().subtract(i, "day").format("YYYY-MM-DD")
-  ).reverse();
-
-  const dailyData = dates.map((date) => {
-    const dailyTransactions = transactionStore.chartsData.filter(
-      (t) => t.date === date
-    );
-
-    const netAmount = dailyTransactions.reduce((sum, transaction) => {
-      return transaction.credited
-        ? sum + transaction.amount
-        : sum - transaction.amount;
-    }, 0);
-
-    return { date, netAmount };
-  });
+  // Get the 10 most recent transactions
+  const lastTen = [...transactionStore.chartsData]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 10)
+    .reverse(); // Oldest to newest for chart display
 
   return {
-    labels: dailyData.map((d) => dayjs(d.date).format("MMM D")),
+    labels: lastTen.map((t) => dayjs(t.date).format("MMM D, HH:mm")),
     datasets: [
       {
-        label: "Net Amount",
-        data: dailyData.map((d) => d.netAmount),
-        backgroundColor: "#4f46e5",
+        label: "Transaction Amount",
+        data: lastTen.map((t) => (t.credited ? t.amount : -t.amount)),
+        backgroundColor: "#10b981",
         borderWidth: 0,
         barThickness: 40,
       },
@@ -57,7 +45,7 @@ const chartOptions = {
     bar: {
       borderRadius: 6,
       borderSkipped: false,
-      backgroundColor: "#ccc",
+      backgroundColor: "#fff",
     },
   },
   scales: {

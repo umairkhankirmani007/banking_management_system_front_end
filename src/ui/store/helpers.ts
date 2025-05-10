@@ -82,7 +82,9 @@ import { useUserStore } from "./userInfo";
 import { usePayeeStore } from "./PayeesStore";
 
 export const api = axios.create({
-  baseURL: "https://banking-management-system-backend-nine.vercel.app",
+  // baseURL: "https://banking-management-system-backend-nine.vercel.app",
+  baseURL: "https://spendwise-backend-roan.vercel.app",
+
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",

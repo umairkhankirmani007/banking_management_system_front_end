@@ -23,14 +23,14 @@ function selectTab(value: string) {
 
 const colorMap = {
   accent: {
-    base: "bg-accent-100",
-    textActive: "text-accent-900",
+    base: "bg-blue-500",
+    textActive: "text-black",
     textInactive: "text-accent-600 hover:text-accent-800",
   },
   gray: {
-    base: "bg-gray-200",
+    base: "bg-dark",
     textActive: "text-gray-900",
-    textInactive: "text-gray-600 hover:text-gray-800",
+    textInactive: "text-white hover:text-gray-600 cursor-pointer",
   },
 };
 

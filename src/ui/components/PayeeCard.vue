@@ -40,7 +40,7 @@ onBeforeUnmount(() => {
       <div
         v-for="payee in payeeStore?.userPayeesList"
         :key="payee._id"
-        class="relative bg-white rounded-xl shadow hover:shadow-lg transition-all duration-200 p-4 flex items-center gap-4"
+        class="relative bg-gradient-to-r from-blue to-midDark via-90% rounded-xl shadow hover:shadow-lg transition-all duration-200 p-4 flex items-center gap-4"
       >
         <img
           :src="payee.imageUrl || staticData.userImage"
@@ -48,11 +48,11 @@ onBeforeUnmount(() => {
           class="w-16 h-16 rounded-full object-cover object-top border border-gray-200"
         />
         <div class="flex-1 overflow-hidden">
-          <h3 class="text-base font-semibold text-gray-800 truncate">
+          <h3 class="text-base font-semibold capitalize text-white truncate">
             {{ payee.userName }}
           </h3>
-          <h2 class="text-xs text-gray-500 truncate">{{ payee.email }}</h2>
-          <h2 class="text-sm text-gray-400 truncate">{{ payee._id }}</h2>
+          <h2 class="text-xs text-white truncate">{{ payee.email }}</h2>
+          <h2 class="text-sm text-white truncate">{{ payee._id }}</h2>
         </div>
 
         <div class="relative payee-dropdown">

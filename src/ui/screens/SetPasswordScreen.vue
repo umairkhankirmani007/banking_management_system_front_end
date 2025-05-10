@@ -10,7 +10,7 @@ const authStore = useAuthStore();
 </script>
 
 <template>
-  <section>
+  <section class="flex items-center justify-center">
     <form
       v-if="!authStore.isLoading"
       @submit.prevent="authStore.setNewPassword(password)"

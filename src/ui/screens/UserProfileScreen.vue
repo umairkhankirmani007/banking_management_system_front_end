@@ -93,14 +93,20 @@ const handleUserUpdate = async () => {
 };
 console.log(userSession.token);
 </script>
-
 <template>
   <main class="flex items-center justify-center h-screen">
-    <BackButton />
     <section
-      class="bg-white shadow-lg p-5 rounded-lg flex flex-col gap-4 items-center"
+      class="bg-transparent border border-accent p-5 rounded-lg flex flex-col gap-4 items-center"
     >
-      <h2 class="text-xl font-semibold text-accent">Edit Profile</h2>
+      <!-- Header Fieldset -->
+      <fieldset
+        class="border border-gray-300 rounded-md px-4 py-2 w-full max-w-2xl"
+      >
+        <legend class="text-accent font-semibold px-2">Profile</legend>
+        <h2 class="text-xl font-semibold text-accent text-center">
+          Edit Profile
+        </h2>
+      </fieldset>
 
       <!-- Editable Image -->
       <div class="relative cursor-pointer" @click="triggerFilePicker">
@@ -122,57 +128,55 @@ console.log(userSession.token);
         </div>
       </div>
 
-      <!-- Form Fields -->
-      <form
-        @submit.prevent="handleUserUpdate"
-        class="grid grid-cols-2 gap-5 mt-4"
-      >
-        <CInput
-          icon="mdi:user"
-          placeholder="First name"
-          type="text"
-          v-model="formData.firstName"
-        />
-        <CInput
-          icon="mdi:user"
-          placeholder="Last name"
-          type="text"
-          v-model="formData.lastName"
-        />
-        <CInput
-          icon="mdi:email"
-          placeholder="Email"
-          type="text"
-          v-model="formData.email"
-          disabled
-        />
-        <CInput
-          icon="mdi:phone"
-          placeholder="Phone Number"
-          type="text"
-          v-model="formData.phoneNumber"
-        />
-        <!-- <CInput
-          icon="mdi:password"
-          placeholder="Password"
-          type="text"
-          v-model="formData.password"
-        /> -->
-        <CInput
-          icon="mdi:cake"
-          placeholder="Age"
-          type="number"
-          v-model.number="formData.age"
-        />
+      <!-- Form Fieldset -->
+      <form @submit.prevent="handleUserUpdate" class="w-full max-w-2xl mt-4">
+        <fieldset class="border border-gray-300 rounded-md p-4">
+          <legend class="text-accent font-medium px-2">User Information</legend>
+          <div class="grid grid-cols-2 gap-5">
+            <CInput
+              icon="mdi:user"
+              placeholder="First name"
+              type="text"
+              v-model="formData.firstName"
+            />
+            <CInput
+              icon="mdi:user"
+              placeholder="Last name"
+              type="text"
+              v-model="formData.lastName"
+            />
+            <CInput
+              icon="mdi:email"
+              placeholder="Email"
+              type="text"
+              v-model="formData.email"
+              disabled
+            />
+            <CInput
+              icon="mdi:phone"
+              placeholder="Phone Number"
+              type="text"
+              v-model="formData.phoneNumber"
+            />
+            <CInput
+              icon="mdi:cake"
+              placeholder="Age"
+              type="number"
+              v-model.number="formData.age"
+            />
 
-        <CButton
-          type="submit"
-          :disabled="!isFormChanged"
-          class="col-span-2 opacity-100 disabled:opacity-50"
-          :loading="isLoading"
-        >
-          Update Info
-        </CButton>
+            <div class="col-span-2">
+              <CButton
+                type="submit"
+                :disabled="!isFormChanged"
+                class="w-full opacity-100 disabled:opacity-50"
+                :loading="isLoading"
+              >
+                Update Info
+              </CButton>
+            </div>
+          </div>
+        </fieldset>
       </form>
     </section>
   </main>
