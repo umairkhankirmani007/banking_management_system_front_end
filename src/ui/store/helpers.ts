@@ -226,3 +226,7 @@ export function validatePayee(id: string | number) {
   const payee = payeeStore.allAppUsers.find((item) => item.userId === id);
   return payee || false;
 }
+
+export const clearLocalStorage = () => {
+  localStorage.clear();
+};

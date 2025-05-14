@@ -1,5 +1,11 @@
 import { defineStore } from "pinia";
-import { api, notify, validateForm, type ValidationRules } from "./helpers";
+import {
+  api,
+  clearLocalStorage,
+  notify,
+  validateForm,
+  type ValidationRules,
+} from "./helpers";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "./userInfo";
@@ -51,6 +57,7 @@ export const useAuthStore = defineStore("authStore", () => {
       notify(firstError, "error");
       return;
     }
+    clearLocalStorage();
     localStorage.setItem("otpEmail", data.email);
     try {
       const payload = {
@@ -134,7 +141,44 @@ export const useAuthStore = defineStore("authStore", () => {
 
   //===============Login_USER=========================
 
+  const MAX_ATTEMPTS = 3;
+  const LOCKOUT_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+  // Get the lockout info from localStorage
+  function getLockInfo() {
+    const lockInfo = localStorage.getItem("loginLockInfo");
+    return lockInfo ? JSON.parse(lockInfo) : { attempts: 0, lockTime: null };
+  }
+
+  // Save the lockout info to localStorage
+  function saveLockInfo(info: { attempts: number; lockTime: number | null }) {
+    localStorage.setItem("loginLockInfo", JSON.stringify(info));
+  }
+
+  // Check if the account is locked
+  function isLockedOut(): boolean {
+    const { lockTime } = getLockInfo();
+    if (!lockTime) return false;
+
+    const now = Date.now();
+    const diff = now - lockTime;
+    return diff < LOCKOUT_DURATION_MS;
+  }
+
+  // Reset the lockout info
+  function resetLockInfo() {
+    saveLockInfo({ attempts: 0, lockTime: null });
+  }
+
   const handleLogin = async () => {
+    const lockInfo = getLockInfo();
+
+    // Check if user is locked out
+    if (isLockedOut()) {
+      notify("Account is locked. Please try again after 24 hours.", "error");
+      return;
+    }
+
     const data = loginFormData.value;
 
     const validationRules: ValidationRules = {
@@ -156,16 +200,34 @@ export const useAuthStore = defineStore("authStore", () => {
       const response = await api.post("/api/auth/login", data);
       const { accessToken, refreshToken, user } = response.data;
 
+      // Login success: reset lock info
+      resetLockInfo();
+
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
-
       localStorage.setItem("user", JSON.stringify(user));
+
       notify("Login successful", "success");
       userSession.setToken(accessToken);
       userSession.setUser(user);
       router.push({ name: "Dashboard" });
     } catch (error) {
-      notify("Invalid email or password", "error");
+      // Increment failed attempt
+      const attempts = lockInfo.attempts + 1;
+      const lockTime = attempts >= MAX_ATTEMPTS ? Date.now() : null;
+
+      saveLockInfo({ attempts, lockTime });
+
+      if (attempts >= MAX_ATTEMPTS) {
+        notify("Account is locked. Please try again after 24 hours.", "error");
+      } else {
+        notify(
+          `Invalid email or password. ${
+            MAX_ATTEMPTS - attempts
+          } attempt(s) left.`,
+          "error"
+        );
+      }
     } finally {
       isLoading.value = false;
     }

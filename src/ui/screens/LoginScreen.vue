@@ -8,6 +8,26 @@ import { useAuthStore } from "../store/AuthStore";
 import PhoneInput from "../components/PhoneInput.vue";
 
 const authStore = useAuthStore();
+
+// Check lockout status function
+const getLockInfo = () => {
+  const lockInfo = localStorage.getItem("loginLockInfo");
+  return lockInfo ? JSON.parse(lockInfo) : { attempts: 0, lockTime: null };
+};
+
+const isLockedOut = () => {
+  const { lockTime } = getLockInfo();
+  if (!lockTime) return false;
+
+  const now = Date.now();
+  const diff = now - lockTime;
+  return diff < 24 * 60 * 60 * 1000; // 24 hours
+};
+
+// Lockout message if locked
+const lockoutMessage = isLockedOut()
+  ? "Your account is locked for 24 hours due to multiple failed login attempts. Please try again later."
+  : null;
 </script>
 
 <template>
@@ -35,9 +55,17 @@ const authStore = useAuthStore();
       leave-to-class="opacity-0"
     >
       <div :key="authStore.currentTab">
-        <!-- Login Form -->
+        <!-- Show Lockout Message if Locked and Login Tab is Active -->
+        <div
+          v-if="authStore.currentTab === 'login' && lockoutMessage"
+          class="text-center text-red-500 mt-6"
+        >
+          <p>{{ lockoutMessage }}</p>
+        </div>
+
+        <!-- Login Form (Only show if not locked) -->
         <form
-          v-if="authStore.currentTab === 'login'"
+          v-if="authStore.currentTab === 'login' && !lockoutMessage"
           @submit.prevent="authStore.handleLogin"
           class="space-y-5"
         >
@@ -64,8 +92,13 @@ const authStore = useAuthStore();
             Login
           </CButton>
         </form>
-        <!-- Sign Up Form -->
-        <form v-else @submit.prevent="authStore.handleSignUp" class="space-y-5">
+
+        <!-- Sign Up Form (Always Show when 'sign-up' tab is active) -->
+        <form
+          v-if="authStore.currentTab === 'signup'"
+          @submit.prevent="authStore.handleSignUp"
+          class="space-y-5"
+        >
           <CInput
             v-model="authStore.signupForm.firstName"
             placeholder="First Name"
@@ -88,25 +121,15 @@ const authStore = useAuthStore();
             icon="mdi:email"
             width="w-full"
           />
-          <!-- <CInput
-            type="number"
-            v-model="authStore.signupForm.phoneNumber"
-            placeholder="Phone Number"
-            icon="mdi:phone"
-            width="w-full"
-            required
-          /> -->
-
           <PhoneInput v-model="authStore.signupForm.phoneNumber" />
           <CInput
             type="number"
             v-model="authStore.signupForm.age"
-            placeholder="age"
+            placeholder="Age"
             icon="mdi:numeric-9-plus-circle-outline"
             width="w-full"
             required
           />
-
           <CButton
             type="submit"
             width="w-full"
